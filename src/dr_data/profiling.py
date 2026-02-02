@@ -171,8 +171,10 @@ def infer_col_name_suffix_tags(
     lower_name = name.lower()
     tags: set[str] = set()
     for suffix_tuple, tag in col_name_suffix_map.items():
-        if lower_name.endswith(suffix_tuple):
-            tags.add(tag)
+        for suffix in suffix_tuple:
+            if lower_name.endswith(suffix.lower()):
+                tags.add(tag)
+                break
     return tags
 
 

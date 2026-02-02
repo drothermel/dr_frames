@@ -77,6 +77,17 @@ def test_infer_col_name_suffix_tags():
     assert len(infer_col_name_suffix_tags("other_col", tag_map)) == 0
 
 
+def test_infer_col_name_suffix_tags_uppercase():
+    """Test that uppercase suffixes in the mapping work correctly."""
+    tag_map = {("_PATH", "_DIR"): "path", ("_ID",): "id"}
+
+    assert "path" in infer_col_name_suffix_tags("file_path", tag_map)
+    assert "path" in infer_col_name_suffix_tags("output_dir", tag_map)
+    assert "id" in infer_col_name_suffix_tags("user_id", tag_map)
+    assert "path" in infer_col_name_suffix_tags("FILE_PATH", tag_map)
+    assert "path" in infer_col_name_suffix_tags("OUTPUT_DIR", tag_map)
+
+
 def test_infer_col_name_prefix_tags():
     tag_map = {("is_", "has_"): "bool_like", ("metric_",): "metric"}
 

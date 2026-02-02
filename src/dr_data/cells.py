@@ -172,10 +172,16 @@ def masked_getter(df: pd.DataFrame, mask: pd.Series, column: str) -> Any:
 
 
 def masked_setter(
-    df: pd.DataFrame, mask: pd.Series, column: str, value: Any
+    df: pd.DataFrame,
+    mask: pd.Series,
+    column: str,
+    value: Any,
+    *,
+    inplace: bool = False,
 ) -> pd.DataFrame:
-    df.loc[mask, column] = value
-    return df
+    target = df if inplace else df.copy()
+    target.loc[mask, column] = value
+    return target
 
 
 def _normalize_prefix_items(

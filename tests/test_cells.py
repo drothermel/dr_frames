@@ -134,9 +134,22 @@ def test_masked_getter_empty():
 
 def test_masked_setter():
     df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"]})
+    original_b = df["b"].copy()
     mask = df["a"] == 2
     result = masked_setter(df, mask, "b", "NEW")
     assert result.loc[1, "b"] == "NEW"
+    # Verify original DataFrame is not mutated (default inplace=False)
+    assert list(df["b"]) == list(original_b)
+
+
+def test_masked_setter_inplace():
+    df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"]})
+    mask = df["a"] == 2
+    result = masked_setter(df, mask, "b", "NEW", inplace=True)
+    assert result.loc[1, "b"] == "NEW"
+    # Verify original DataFrame is mutated when inplace=True
+    assert df.loc[1, "b"] == "NEW"
+    assert result is df
 
 
 def test_group_col_by_prefix():
