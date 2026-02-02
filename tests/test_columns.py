@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from dr_data.columns import (
+from dr_frames.columns import (
     apply_skip,
     contained_cols,
     drop_all_null_cols,

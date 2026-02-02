@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from dr_data.aggregation import (
+from dr_frames.aggregation import (
     aggregate_over_seeds,
     apply_aggregations,
     fillna_with_defaults,

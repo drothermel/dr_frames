@@ -2,7 +2,7 @@
 
 Multi-format table rendering (console, markdown, latex, csv).
 
-**Note:** Requires the `[formatting]` extra: `pip install dr-data[formatting]`
+**Note:** Requires the `[formatting]` extra: `pip install dr-frames[formatting]`
 
 ## Functions
 
@@ -80,7 +80,7 @@ column_config = {
 
 ```python
 import pandas as pd
-from dr_data import format_coverage_table, format_table
+from dr_frames import format_coverage_table, format_table
 
 df = pd.DataFrame({
     "model": ["A", "B", "C"],

@@ -97,7 +97,7 @@ Conditionally apply function in a pipe. Condition can be bool or callable.
 
 ```python
 import pandas as pd
-from dr_data import aggregate_over_seeds, get_constant_cols, maybe_pipe
+from dr_frames import aggregate_over_seeds, get_constant_cols, maybe_pipe
 
 df = pd.DataFrame({
     "model": ["A", "A", "A", "B", "B", "B"],

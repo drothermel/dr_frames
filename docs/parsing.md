@@ -52,7 +52,7 @@ Check if all elements in the list are equal.
 
 ```python
 import pandas as pd
-from dr_data import is_homogeneous, parse_first_element, sum_list_elements
+from dr_frames import is_homogeneous, parse_first_element, sum_list_elements
 
 df = pd.DataFrame({
     "expert_sizes": ["[0.5, 0.25]", "[0.125, 0.125]", "[1, 2, 4]"],

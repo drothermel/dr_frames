@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from dr_data.profiling import (
+from dr_frames.profiling import (
     DFColInfo,
     infer_col_name_contains_tags,
     infer_col_name_prefix_tags,

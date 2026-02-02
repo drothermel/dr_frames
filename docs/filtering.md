@@ -76,7 +76,7 @@ Create a composed filter function from a list of `(fn, *args)` tuples.
 
 ```python
 import pandas as pd
-from dr_data import (
+from dr_frames import (
     filter_to_range,
     filter_to_value,
     make_filter_fxn,

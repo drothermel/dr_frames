@@ -11,25 +11,25 @@ To generate HTML API documentation locally:
 uv add --dev pdoc
 
 # Generate HTML docs
-uv run pdoc dr_data -o docs/api_html
+uv run pdoc dr_frames -o docs/api_html
 
 # Or serve locally with live reload
-uv run pdoc dr_data
+uv run pdoc dr_frames
 ```
 
 This opens a browser at `http://localhost:8080` with full API documentation extracted from type hints.
 
 ## Module Index
 
-- `dr_data.columns` - Column selection and reordering
-- `dr_data.filtering` - Row filtering
-- `dr_data.cells` - Cell-level operations
-- `dr_data.types` - Type coercion
-- `dr_data.aggregation` - GroupBy and reduction
-- `dr_data.parsing` - String list parsing
-- `dr_data.schema` - Data field metadata
-- `dr_data.profiling` - Column auto-tagging
-- `dr_data.formatting` - Table output formatting
+- `dr_frames.columns` - Column selection and reordering
+- `dr_frames.filtering` - Row filtering
+- `dr_frames.cells` - Cell-level operations
+- `dr_frames.types` - Type coercion
+- `dr_frames.aggregation` - GroupBy and reduction
+- `dr_frames.parsing` - String list parsing
+- `dr_frames.schema` - Data field metadata
+- `dr_frames.profiling` - Column auto-tagging
+- `dr_frames.formatting` - Table output formatting
 
 ## Quick Type Reference
 

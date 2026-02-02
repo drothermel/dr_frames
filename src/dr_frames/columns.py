@@ -4,7 +4,7 @@ from collections.abc import Iterable, Mapping, Sequence
 
 import pandas as pd
 
-from dr_data.types import is_string_series
+from dr_frames.types import is_string_series
 
 __all__ = [
     "apply_skip",

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from dr_data.formatting import (
+from dr_frames.formatting import (
     FORMATTER_TYPES,
     format_coverage_table,
     format_table,

@@ -71,7 +71,7 @@ class DataFormat(BaseModel):
 
 ```python
 import pandas as pd
-from dr_data import ComputedField, DataField, DataFormat
+from dr_frames import ComputedField, DataField, DataFormat
 
 df = pd.DataFrame({
     "model_size": ["10M", "20M", "50M"],
