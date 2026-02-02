@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -10,6 +11,12 @@ def test_is_string_series():
     assert is_string_series(pd.Series(["a", "b", "c"]))
     assert is_string_series(pd.Series(["a", None, "c"]))
     assert not is_string_series(pd.Series([1, 2, 3]))
+    # Edge case: empty Series
+    assert not is_string_series(pd.Series([]))
+    assert not is_string_series(pd.Series(dtype=object))
+    # Edge case: all-null Series
+    assert not is_string_series(pd.Series([None, None]))
+    assert not is_string_series(pd.Series([np.nan, np.nan]))
 
 
 def test_coerce_numeric_cols():
@@ -33,7 +40,7 @@ def test_coerce_numeric_cols_int_with_nulls():
 
 def test_coerce_numeric_cols_invalid_int():
     df = pd.DataFrame({"a": ["1.5", "2.5", "3.5"]})
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         coerce_numeric_cols(df, ["a"], dtype=int)
 
 

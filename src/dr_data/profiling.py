@@ -3,15 +3,12 @@ from __future__ import annotations
 import json
 from collections.abc import Callable
 from pathlib import PurePath
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import pandas as pd
 from pydantic import BaseModel, Field
 
 from .aggregation import unique_non_null
-
-if TYPE_CHECKING:
-    pass
 
 __all__ = [
     "ColInfo",
@@ -137,16 +134,29 @@ class DFColInfo(BaseModel):
 def infer_tags_from_series_sample(
     series: pd.Series,
     path_like_extensions: set[str],
+    sample_size: int = 10,
 ) -> set[str]:
     tags: set[str] = set()
     unique_vals = unique_non_null(series)
     if len(unique_vals) == 0:
         return tags
 
-    sample_point = unique_vals[0]
-    if looks_like_path(sample_point, path_like_extensions):
+    # Sample up to sample_size unique non-null values
+    sample_vals = unique_vals[: min(sample_size, len(unique_vals))]
+
+    # Check each sampled value for path and JSON patterns
+    path_matches = 0
+    json_matches = 0
+    for value in sample_vals:
+        if looks_like_path(value, path_like_extensions):
+            path_matches += 1
+        if looks_like_json(value):
+            json_matches += 1
+
+    # Add tags if at least one value matches
+    if path_matches > 0:
         tags.add("path")
-    if looks_like_json(sample_point):
+    if json_matches > 0:
         tags.add("json")
     return tags
 

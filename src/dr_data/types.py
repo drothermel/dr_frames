@@ -14,7 +14,10 @@ __all__ = [
 
 
 def is_string_series(series: pd.Series) -> bool:
-    return bool(series.dropna().map(lambda x: isinstance(x, str)).all())
+    non_null = series.dropna()
+    if len(non_null) == 0:
+        return False
+    return bool(non_null.map(lambda x: isinstance(x, str)).all())
 
 
 def coerce_numeric_cols(
@@ -23,18 +26,19 @@ def coerce_numeric_cols(
     dtype: type[float] | type[int] = float,
 ) -> pd.DataFrame:
     columns_list = list(columns)
-    if not columns_list:
-        return df
     working = df.copy()
+    if not columns_list:
+        return working
     for c in columns_list:
         if c not in working.columns:
             continue
         coerced = cast(pd.Series, pd.to_numeric(working[c], errors="coerce"))
         if dtype is int:
             non_null = coerced.dropna()
-            assert np.isclose(non_null, non_null.astype(int)).all(), (
-                f"Column '{c}' contains non-integer values after coercion."
-            )
+            if not np.isclose(non_null, non_null.astype(int)).all():
+                raise ValueError(
+                    f"Column '{c}' contains non-integer values after coercion."
+                )
             target_dtype: object = "Int64" if coerced.isna().any() else int
         else:
             target_dtype = dtype
@@ -48,7 +52,7 @@ def coerce_string_cols(
 ) -> pd.DataFrame:
     columns_list = list(columns)
     if not columns_list:
-        return df
+        return df.copy()
     working = df.copy()
     for c in columns_list:
         if c not in working.columns:

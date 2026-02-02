@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from dr_data.schema import ComputedField, DataField, DataFormat, MetricDataField
 
@@ -27,7 +28,8 @@ def test_data_field_resolve_column():
     field1 = DataField(id_string="a")
     field2 = DataField(id_string="c")
     assert field1.resolve_column(df) == "a"
-    assert field2.resolve_column(df) == "Unknown"
+    with pytest.raises(ValueError, match="Cannot resolve column"):
+        field2.resolve_column(df)
 
 
 def test_data_field_infer_altair_type():

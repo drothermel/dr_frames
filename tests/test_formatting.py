@@ -64,3 +64,11 @@ def test_format_coverage_table():
     assert "Column Coverage" in result
     assert "a" in result
     assert "b" in result
+
+
+def test_format_coverage_table_empty():
+    """Test that format_coverage_table handles empty DataFrame without raising ZeroDivisionError."""
+    df = pd.DataFrame()
+    result = format_coverage_table(df, output_format="plain")
+    assert "Column Coverage" in result
+    assert isinstance(result, str)

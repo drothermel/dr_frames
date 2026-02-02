@@ -4,6 +4,8 @@ from collections.abc import Iterable, Mapping, Sequence
 
 import pandas as pd
 
+from dr_data.types import is_string_series
+
 __all__ = [
     "apply_skip",
     "contained_cols",
@@ -21,10 +23,6 @@ __all__ = [
 
 def _strip_prefix(text: str, prefix: str) -> str:
     return text[len(prefix) :] if text.startswith(prefix) else text
-
-
-def _is_string_series(series: pd.Series) -> bool:
-    return bool(series.dropna().map(lambda x: isinstance(x, str)).all())
 
 
 def apply_skip(
@@ -101,7 +99,7 @@ def drop_all_null_cols(df: pd.DataFrame) -> pd.DataFrame:
     object_cols = working.select_dtypes(include=["object", "string"])
     blank_mask = pd.DataFrame(False, index=working.index, columns=working.columns)
     if not object_cols.empty:
-        string_cols = [c for c, col in object_cols.items() if _is_string_series(col)]
+        string_cols = [c for c, col in object_cols.items() if is_string_series(col)]
         if string_cols:
             blank_mask[string_cols] = object_cols[string_cols].apply(
                 lambda col: col.str.strip() == ""

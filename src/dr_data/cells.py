@@ -100,6 +100,26 @@ def apply_column_converters(
     return target
 
 
+def _matches_missing_marker(current: Any, marker: Any) -> bool:
+    """Safely check if current value matches a missing marker.
+
+    Handles NaN values via pd.isna comparisons and catches TypeError
+    for unhashable types to ensure comparisons never raise.
+    """
+    try:
+        # Handle NaN comparisons first
+        if pd.isna(current) and pd.isna(marker):
+            return True
+        if pd.isna(current) or pd.isna(marker):
+            return False
+        # Safe equality check for hashable and unhashable types
+        return current == marker
+    except TypeError:
+        # Unhashable types (e.g., lists, dicts) can't be compared with ==
+        # in some contexts, so return False to be safe
+        return False
+
+
 def maybe_update_cell(
     df: pd.DataFrame,
     row_index: int,
@@ -114,7 +134,9 @@ def maybe_update_cell(
         return target
 
     current = target.loc[row_index, column]
-    is_missing = pd.isna(current) or current in missing_markers
+    is_missing = pd.isna(current) or any(
+        _matches_missing_marker(current, m) for m in missing_markers
+    )
     if is_missing:
         target.loc[row_index, column] = value
     return target
@@ -156,8 +178,10 @@ def require_row_index(
     value: Any,
 ) -> int:
     matches = df.index[df[column] == value]
-    assert len(matches) > 0, f"No rows found where {column} == {value!r}"
-    assert len(matches) <= 1, f"Multiple rows found where {column} == {value!r}"
+    if len(matches) == 0:
+        raise ValueError(f"No rows found where {column} == {value!r}")
+    if len(matches) > 1:
+        raise ValueError(f"Multiple rows found where {column} == {value!r}")
     return int(matches[0])
 
 

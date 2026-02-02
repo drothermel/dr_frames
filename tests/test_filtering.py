@@ -49,8 +49,16 @@ def test_filter_to_value(sample_df: pd.DataFrame):
 
 def test_filter_to_value_none():
     df = pd.DataFrame({"a": [1, None, 3]})
+    result = filter_to_value(df, "a", None)
+    assert len(result) == 1
+
+
+def test_filter_to_value_literal_none_string():
+    """Test that literal string 'none' is preserved and not treated as NA."""
+    df = pd.DataFrame({"a": ["none", "something", None]})
     result = filter_to_value(df, "a", "none")
     assert len(result) == 1
+    assert result.iloc[0]["a"] == "none"
 
 
 def test_filter_to_values(sample_df: pd.DataFrame):
@@ -60,8 +68,16 @@ def test_filter_to_values(sample_df: pd.DataFrame):
 
 def test_filter_to_values_with_none():
     df = pd.DataFrame({"a": [1, None, 3]})
-    result = filter_to_values(df, "a", [1, "none"])
+    result = filter_to_values(df, "a", [1, None])
     assert len(result) == 2
+
+
+def test_filter_to_values_literal_none_string():
+    """Test that literal string 'none' is preserved and not treated as NA."""
+    df = pd.DataFrame({"a": ["none", "something", None, "other"]})
+    result = filter_to_values(df, "a", ["none", "other"])
+    assert len(result) == 2
+    assert set(result["a"].tolist()) == {"none", "other"}
 
 
 def test_filter_to_range(sample_df: pd.DataFrame):

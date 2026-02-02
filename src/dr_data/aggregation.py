@@ -81,10 +81,10 @@ def apply_aggregations(
 ) -> pd.DataFrame:
     if df.empty:
         return df
-    assert group_col in df.columns, f"Group column '{group_col}' not found in dataframe."
-    assert group_col not in (drop_cols or []), (
-        f"Group column '{group_col}' cannot be in drop_cols."
-    )
+    if group_col not in df.columns:
+        raise ValueError(f"Group column '{group_col}' not found in dataframe.")
+    if group_col in (drop_cols or []):
+        raise ValueError(f"Group column '{group_col}' cannot be in drop_cols.")
 
     cols_to_drop = {*(drop_cols or []), *agg_over_cols}
     numeric_cols = set(df.select_dtypes(include=["number"]).columns.tolist())

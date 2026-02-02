@@ -94,6 +94,8 @@ def test_apply_aggregations():
     assert len(result) == 2
     assert "seed" not in result.columns
     assert "metrics_loss" in result.columns
+    assert "label" in result.columns
+    assert set(result["label"]) == {"x", "y"}
 
 
 def test_aggregate_over_seeds(metrics_df: pd.DataFrame):

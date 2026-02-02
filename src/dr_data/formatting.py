@@ -86,8 +86,12 @@ def format_coverage_table(
     disable_numparse: bool = True,
 ) -> str:
     coverage_data = []
+    row_count = len(df) or df.shape[0]
     for i, col in enumerate(df.columns):
-        coverage = df[col].notna().sum() / len(df) * 100
+        if row_count == 0:
+            coverage = 0
+        else:
+            coverage = df[col].notna().sum() / row_count * 100
         coverage_data.append({"index": i + 1, "column": col, "coverage": coverage})
     result = f"{title} ({len(df.columns)} columns):\n"
     table_result = format_table(
@@ -106,7 +110,14 @@ def _preprocess_data(data: list[dict] | pd.DataFrame | list[list]) -> list[list]
         return data.to_numpy().tolist()
     elif isinstance(data, list) and len(data) > 0:
         if isinstance(data[0], dict):
+            # Build stable union of all keys: preserve first-row order, then append new keys
             keys = list(data[0].keys())
+            keys_set = set(keys)
+            for row in data[1:]:
+                for key in row.keys():
+                    if key not in keys_set:
+                        keys.append(key)
+                        keys_set.add(key)
             return [[row.get(key) for key in keys] for row in data]  # type: ignore[union-attr]
         else:
             return list(data)  # type: ignore[arg-type]
@@ -117,7 +128,15 @@ def _get_column_names(data: list[dict] | pd.DataFrame | list[list]) -> list[str]
     if isinstance(data, pd.DataFrame):
         return list(data.columns)
     elif isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
-        return list(data[0].keys())
+        # Build stable union of all keys: preserve first-row order, then append new keys
+        keys = list(data[0].keys())
+        keys_set = set(keys)
+        for row in data[1:]:
+            for key in row.keys():
+                if key not in keys_set:
+                    keys.append(key)
+                    keys_set.add(key)
+        return keys
     else:
         return []
 

@@ -30,7 +30,7 @@ def select_subset(
             mask &= df[column].isna()
         else:
             mask &= df[column] == value
-    return df.loc[mask]
+    return df.loc[mask].copy()
 
 
 def apply_filters_to_df(
@@ -45,17 +45,21 @@ def apply_filters_to_df(
     return df.reset_index(drop=True)
 
 
-def filter_to_value(df: pd.DataFrame, column: str, value: float | str) -> pd.DataFrame:
-    if value == "none":
+def filter_to_value(
+    df: pd.DataFrame, column: str, value: float | str | None
+) -> pd.DataFrame:
+    """Filter to rows matching a specific value. Use None to match NaN values."""
+    if value is None:
         return df[df[column].isna()].copy()
     return df[df[column] == value].copy()
 
 
 def filter_to_values(
-    df: pd.DataFrame, column: str, values: list[float | str]
+    df: pd.DataFrame, column: str, values: list[float | str | None]
 ) -> pd.DataFrame:
-    if "none" in values:
-        other_values = [v for v in values if v != "none"]
+    """Filter to rows matching any value in list. Use None in list to include NaN."""
+    if None in values:
+        other_values = [v for v in values if v is not None]
         mask = df[column].isna() | df[column].isin(other_values)
     else:
         mask = df[column].isin(values)

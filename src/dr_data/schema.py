@@ -41,13 +41,20 @@ class DataField(BaseModel):
     def resolve_column(self, df: pd.DataFrame) -> str:
         if self.column_name:
             return self.column_name
-        return self.id_string if self.id_string in df.columns else "Unknown"
+        if self.id_string in df.columns:
+            return self.id_string
+        raise ValueError(
+            f"Cannot resolve column for field with id_string='{self.id_string}'. "
+            f"Neither column_name nor id_string '{self.id_string}' found in DataFrame columns. "
+            f"Available columns: {list(df.columns)}"
+        )
 
     def infer_altair_type(self, df: pd.DataFrame) -> str:
         if self.altair_type:
             return self.altair_type
-        col = self.resolve_column(df)
-        if col not in df.columns:
+        try:
+            col = self.resolve_column(df)
+        except ValueError:
             return "N"
         dtype = df[col].dtype
         if pd.api.types.is_numeric_dtype(dtype):
@@ -97,6 +104,7 @@ class DataFormat(BaseModel):
     computed_fields: list[ComputedField] = Field(default_factory=list)
     metrics: list[MetricDataField] = Field(default_factory=list)
     column_overrides: dict[str, str] = Field(default_factory=dict)
+    metric_prefix: str = "eval/"
 
     @classmethod
     def from_dict(
@@ -165,6 +173,7 @@ class DataFormat(BaseModel):
             computed_fields=cf_list,
             metrics=metrics,
             column_overrides=overrides,
+            metric_prefix=metric_prefix,
         )
 
     @property
@@ -206,13 +215,16 @@ class DataFormat(BaseModel):
 
     def metric_col(self, pattern: str) -> str:
         metric = self.get_metric(pattern)
-        assert metric is not None and metric.column_name is not None, (
-            f"No metric found matching '{pattern}'"
-        )
+        if metric is None:
+            raise ValueError(f"No metric found matching '{pattern}'")
+        if metric.column_name is None:
+            raise ValueError(
+                f"Metric matching '{pattern}' exists but has no column_name"
+            )
         return metric.column_name
 
     def get_metrics(self, df: pd.DataFrame) -> list[str]:
-        return [col for col in df.columns if col.startswith("eval/")]
+        return [col for col in df.columns if col.startswith(self.metric_prefix)]
 
     def get_config_columns(self, use_computed: bool = True) -> list[str]:
         if use_computed:
