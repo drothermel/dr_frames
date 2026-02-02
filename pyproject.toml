@@ -1,0 +1,77 @@
+[project]
+name = "dr-data"
+version = "0.1.0"
+description = "Pandas/DataFrame utilities for data manipulation, filtering, aggregation, and schema management"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Danielle Rothermel", email = "danielle.rothermel@gmail.com" }
+]
+requires-python = ">=3.12"
+keywords = ["pandas", "dataframe", "data-manipulation", "filtering", "aggregation", "schema"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pandas>=2.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+formatting = [
+    "rich>=13.0.0",
+    "tabulate>=0.9.0",
+    "pyyaml>=6.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/drothermel/dr_data"
+Repository = "https://github.com/drothermel/dr_data"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build]
+exclude = [
+  "docs",
+  "docs/**",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dr_data"]
+
+[dependency-groups]
+dev = [
+    "pdoc>=15.0.0",
+    "pytest>=8.4.1",
+    "pyyaml>=6.0.0",
+    "rich>=13.0.0",
+    "ruff>=0.9.0",
+    "tabulate>=0.9.0",
+    "ty>=0.0.14",
+]
+
+[tool.ruff]
+include = [
+    "src/**/*.py",
+    "tests/**/*.py",
+]
+line-length = 88
+cache-dir = ".ruff_cache"
+exclude = ["outputs/*", "notebooks/*", "plots/*", "data/*", "docs/*"]
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"
