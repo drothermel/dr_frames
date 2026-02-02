@@ -108,13 +108,13 @@ def test_require_row_index():
 
 def test_require_row_index_not_found():
     df = pd.DataFrame({"a": ["x", "y", "z"]})
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         require_row_index(df, "a", "w")
 
 
 def test_require_row_index_multiple():
     df = pd.DataFrame({"a": ["x", "x", "z"]})
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         require_row_index(df, "a", "x")
 
 
