@@ -114,7 +114,7 @@ def _preprocess_data(data: list[dict] | pd.DataFrame | list[list]) -> list[list]
             keys = list(data[0].keys())
             keys_set = set(keys)
             for row in data[1:]:
-                for key in row.keys():
+                for key in row.keys():  # type: ignore[union-attr]
                     if key not in keys_set:
                         keys.append(key)
                         keys_set.add(key)
@@ -132,7 +132,7 @@ def _get_column_names(data: list[dict] | pd.DataFrame | list[list]) -> list[str]
         keys = list(data[0].keys())
         keys_set = set(keys)
         for row in data[1:]:
-            for key in row.keys():
+            for key in row.keys():  # type: ignore[union-attr]
                 if key not in keys_set:
                     keys.append(key)
                     keys_set.add(key)
