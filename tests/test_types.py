@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from dr_data.types import coerce_numeric_cols, coerce_string_cols, is_string_series
+from dr_frames.types import coerce_numeric_cols, coerce_string_cols, is_string_series
 
 
 def test_is_string_series():

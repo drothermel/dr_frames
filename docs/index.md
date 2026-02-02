@@ -1,4 +1,4 @@
-# dr_data Documentation
+# dr_frames Documentation
 
 Pandas/DataFrame utilities for data manipulation, filtering, aggregation, and schema management.
 

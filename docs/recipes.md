@@ -1,6 +1,6 @@
 # Recipes & Patterns
 
-Common usage patterns combining multiple dr_data functions.
+Common usage patterns combining multiple dr_frames functions.
 
 ## Data Loading Pipeline
 
@@ -8,7 +8,7 @@ Clean and standardize data after loading from CSV/parquet:
 
 ```python
 import pandas as pd
-from dr_data import (
+from dr_frames import (
     coerce_numeric_cols,
     drop_all_null_cols,
     move_cols_to_beginning,
@@ -31,7 +31,7 @@ def load_and_clean(path: str, id_cols: list[str]) -> pd.DataFrame:
 Filter experiments to specific configurations:
 
 ```python
-from dr_data import filter_to_range, filter_to_value, make_filter_fxn
+from dr_frames import filter_to_range, filter_to_value, make_filter_fxn
 
 # Define reusable filter
 best_settings = make_filter_fxn([
@@ -49,7 +49,7 @@ filtered = best_settings(df)
 Aggregate metrics across random seeds:
 
 ```python
-from dr_data import aggregate_over_seeds, get_constant_cols
+from dr_frames import aggregate_over_seeds, get_constant_cols
 
 # Find which columns vary vs are constant
 constants = get_constant_cols(df, skip=["seed", "run_id"])
@@ -69,7 +69,7 @@ agg = aggregate_over_seeds(
 Define data schema once, use everywhere:
 
 ```python
-from dr_data import ComputedField, DataField, DataFormat
+from dr_frames import ComputedField, DataField, DataFormat
 
 class MyExperimentFormat(DataFormat):
     fields = [
@@ -101,7 +101,7 @@ plot_df = fmt.prepare_for_plotting(df)
 Explore unfamiliar datasets:
 
 ```python
-from dr_data import DFColInfo, format_coverage_table
+from dr_frames import DFColInfo, format_coverage_table
 
 # Profile columns
 info = DFColInfo()
@@ -122,7 +122,7 @@ print(format_coverage_table(df))
 Apply transformations conditionally:
 
 ```python
-from dr_data import maybe_pipe, drop_all_null_cols, coerce_numeric_cols
+from dr_frames import maybe_pipe, drop_all_null_cols, coerce_numeric_cols
 
 result = (
     df
@@ -140,7 +140,7 @@ result = (
 Work with columns that may or may not exist:
 
 ```python
-from dr_data import (
+from dr_frames import (
     apply_if_column,
     contained_cols,
     ensure_column,
@@ -170,7 +170,7 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
 Select best run per configuration:
 
 ```python
-from dr_data import filter_to_best_metric, select_subset
+from dr_frames import filter_to_best_metric, select_subset
 
 # Get best loss per model size
 best_by_size = filter_to_best_metric(
@@ -195,7 +195,7 @@ best = filter_to_best_metric(
 Handle stringified lists from CSV exports:
 
 ```python
-from dr_data import is_homogeneous, parse_first_element, sum_list_elements
+from dr_frames import is_homogeneous, parse_first_element, sum_list_elements
 
 # Add computed columns from string lists
 df["granularity"] = df["expert_sizes"].apply(parse_first_element)

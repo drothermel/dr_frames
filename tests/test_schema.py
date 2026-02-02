@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from dr_data.schema import ComputedField, DataField, DataFormat, MetricDataField
+from dr_frames.schema import ComputedField, DataField, DataFormat, MetricDataField
 
 
 def test_data_field_display_name_derived():

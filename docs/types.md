@@ -39,7 +39,7 @@ Check if all non-null values in series are strings.
 
 ```python
 import pandas as pd
-from dr_data import coerce_numeric_cols, coerce_string_cols
+from dr_frames import coerce_numeric_cols, coerce_string_cols
 
 df = pd.DataFrame({
     "count": ["1", "2", "3"],

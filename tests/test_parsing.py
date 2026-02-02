@@ -4,7 +4,7 @@ import math
 
 import pandas as pd
 
-from dr_data.parsing import (
+from dr_frames.parsing import (
     is_homogeneous,
     parse_first_element,
     parse_list_string,

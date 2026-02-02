@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from dr_data.cells import (
+from dr_frames.cells import (
     apply_column_converters,
     apply_if_column,
     ensure_column,

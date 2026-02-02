@@ -109,7 +109,7 @@ Infer tags by sampling first non-null value (detects paths, JSON).
 
 ```python
 import pandas as pd
-from dr_data import DFColInfo
+from dr_frames import DFColInfo
 
 df = pd.DataFrame({
     "user_id": [1, 2, 3],

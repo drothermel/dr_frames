@@ -150,7 +150,7 @@ Group values by longest matching prefix. Unmatched values returned unchanged.
 
 ```python
 import pandas as pd
-from dr_data import (
+from dr_frames import (
     ensure_column,
     map_column_with_fallback,
     maybe_update_cell,

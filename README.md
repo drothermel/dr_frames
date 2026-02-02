@@ -1,23 +1,23 @@
-# dr_data
+# dr_frames
 
 Pandas/DataFrame utilities for data manipulation, filtering, aggregation, and schema management.
 
 ## Installation
 
 ```bash
-pip install dr-data
+pip install dr-frames
 ```
 
 For table formatting features (console, markdown, latex):
 ```bash
-pip install dr-data[formatting]
+pip install dr-frames[formatting]
 ```
 
 ## Quick Start
 
 ```python
 import pandas as pd
-from dr_data import (
+from dr_frames import (
     coerce_numeric_cols,
     filter_to_range,
     move_cols_to_beginning,
@@ -61,17 +61,17 @@ result = (
 
 ```bash
 # Serve interactive docs locally
-uv run pdoc dr_data
+uv run pdoc dr_frames
 
 # Generate static HTML
-uv run pdoc dr_data -o docs/api_html
+uv run pdoc dr_frames -o docs/api_html
 ```
 
 ## Quick Reference
 
 ### Column Operations
 ```python
-from dr_data import (
+from dr_frames import (
     contained_cols,          # cols that exist in df
     remaining_cols,          # cols NOT in a list
     get_cols_by_prefix,      # cols starting with prefix
@@ -85,7 +85,7 @@ from dr_data import (
 
 ### Filtering
 ```python
-from dr_data import (
+from dr_frames import (
     select_subset,           # filter by exact column values
     apply_filters_to_df,     # filter by value lists
     filter_to_value,         # single value filter
@@ -98,7 +98,7 @@ from dr_data import (
 
 ### Cell Operations
 ```python
-from dr_data import (
+from dr_frames import (
     ensure_column,           # add column if missing
     fill_missing_values,     # fillna with defaults dict
     rename_columns,          # safe rename (skips missing)
@@ -113,7 +113,7 @@ from dr_data import (
 
 ### Type Coercion
 ```python
-from dr_data import (
+from dr_frames import (
     coerce_numeric_cols,     # convert to float/int
     coerce_string_cols,      # convert to string dtype
     is_string_series,        # check if series is strings
@@ -122,7 +122,7 @@ from dr_data import (
 
 ### Aggregation
 ```python
-from dr_data import (
+from dr_frames import (
     aggregate_over_seeds,    # mean/std/count by config
     apply_aggregations,      # flexible groupby
     unique_non_null,         # unique values excluding null
@@ -135,7 +135,7 @@ from dr_data import (
 
 ### Parsing
 ```python
-from dr_data import (
+from dr_frames import (
     parse_list_string,       # "[1,2,3]" -> [1,2,3]
     parse_first_element,     # "[1,2,3]" -> 1.0
     sum_list_elements,       # "[1,2,3]" -> 6.0
@@ -145,7 +145,7 @@ from dr_data import (
 
 ### Schema
 ```python
-from dr_data import (
+from dr_frames import (
     DataField,               # field with metadata
     ComputedField,           # derived field
     MetricDataField,         # metric with group info
@@ -155,7 +155,7 @@ from dr_data import (
 
 ### Profiling
 ```python
-from dr_data import (
+from dr_frames import (
     DFColInfo,               # catalog of column info
     ColInfo,                 # single column metadata
     looks_like_json,         # detect JSON strings
@@ -166,7 +166,7 @@ from dr_data import (
 
 ### Formatting (requires `[formatting]` extra)
 ```python
-from dr_data import (
+from dr_frames import (
     format_table,            # render table in multiple formats
     format_coverage_table,   # show column coverage stats
     FORMATTER_TYPES,         # available formatters

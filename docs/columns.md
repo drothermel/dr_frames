@@ -109,7 +109,7 @@ Drop columns consisting entirely of null-like or blank-string values.
 
 ```python
 import pandas as pd
-from dr_data import (
+from dr_frames import (
     get_cols_by_prefix,
     move_cols_to_beginning,
     strip_col_prefixes,
