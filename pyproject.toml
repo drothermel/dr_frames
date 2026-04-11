@@ -1,6 +1,6 @@
 [project]
 name = "dr-frames"
-version = "0.1.1"
+version = "0.1.2"
 description = "Pandas/DataFrame utilities for data manipulation, filtering, aggregation, and schema management"
 readme = "README.md"
 license = "MIT"

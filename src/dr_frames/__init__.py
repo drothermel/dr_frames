@@ -80,5 +80,3 @@ __all__ = [
     "unique_by_cols",
     "unique_non_null",
 ]
-
-__version__ = "0.1.0"
