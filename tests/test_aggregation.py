@@ -6,7 +6,6 @@ import pytest
 from dr_frames.aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
-    get_constant_cols,
     unique_by_col,
     unique_by_cols,
     unique_non_null,
@@ -33,26 +32,6 @@ def test_unique_by_cols(sample_df: pd.DataFrame):
     result = unique_by_cols(sample_df, ["category", "name"])
     assert set(result["category"]) == {"x", "y"}
     assert set(result["name"]) == {"alice", "bob", "charlie"}
-
-
-def test_get_constant_cols():
-    df = pd.DataFrame({"a": [1, 1, 1], "b": [1, 2, 3], "c": ["x", "x", "x"]})
-    result = get_constant_cols(df)
-    assert result == {"a": 1, "c": "x"}
-
-
-def test_get_constant_cols_empty_df():
-    df = pd.DataFrame()
-    result = get_constant_cols(df)
-    assert result == {}
-
-
-def test_get_constant_cols_single_row():
-    df = pd.DataFrame({"a": [1], "b": [2]})
-    result = get_constant_cols(df)
-    assert result == {}
-
-
 def test_aggregate_by_group():
     df = pd.DataFrame(
         {

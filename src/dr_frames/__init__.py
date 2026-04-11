@@ -3,7 +3,6 @@ from __future__ import annotations
 from .aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
-    get_constant_cols,
     unique_by_col,
     unique_by_cols,
     unique_non_null,
@@ -32,6 +31,7 @@ from .columns import (
     strip_col_prefixes,
     strip_col_prefixes_batch,
 )
+from .constant import get_constant_cols, get_groupwise_constant_cols
 from .filtering import (
     filter_to_best_metric,
     filter_to_range,
@@ -93,6 +93,7 @@ __all__ = [
     "get_cols_by_contains",
     "get_cols_by_prefix",
     "get_constant_cols",
+    "get_groupwise_constant_cols",
     "group_col_by_prefix",
     "infer_series_base_tag_type",
     "infer_tags_from_series_sample",

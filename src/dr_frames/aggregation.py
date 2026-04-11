@@ -6,6 +6,7 @@ from typing import Any
 import pandas as pd
 
 from .columns import move_cols_to_beginning, move_cols_with_prefix_to_end
+from .constant import get_groupwise_constant_cols
 
 __all__ = [
     "aggregate_by_group",
@@ -13,7 +14,6 @@ __all__ = [
     "unique_non_null",
     "unique_by_col",
     "unique_by_cols",
-    "get_constant_cols",
 ]
 
 
@@ -31,44 +31,11 @@ def unique_by_cols(df: pd.DataFrame, cols: Sequence[str]) -> dict[str, Any]:
     return {col: unique_by_col(df, col) for col in contained}
 
 
-def get_constant_cols(df: pd.DataFrame, skip: Iterable[str] = ()) -> dict[str, Any]:
-    if df.empty or len(df) <= 1:
-        return {}
-    skip_set = set(skip)
-    return {
-        c: df[c].iloc[0]
-        for c in df.columns
-        if c not in skip_set
-        if df[c].nunique(dropna=False) <= 1
-    }
-
-
 def _validate_group_columns(df: pd.DataFrame, group_cols: Sequence[str]) -> list[str]:
     valid_group_cols = [column for column in group_cols if column in df.columns]
     if not valid_group_cols:
         raise ValueError("At least one grouping column must be present in the dataframe.")
     return valid_group_cols
-
-
-def _constant_value_columns(
-    df: pd.DataFrame,
-    group_cols: Sequence[str],
-    candidate_cols: Sequence[str],
-) -> list[str]:
-    if not candidate_cols:
-        return []
-
-    varying_cols = [
-        column
-        for column in candidate_cols
-        if df.groupby(list(group_cols), dropna=False)[column].nunique(dropna=False).gt(1).any()
-    ]
-    if varying_cols:
-        raise ValueError(
-            "Non-numeric columns must be constant within each group: "
-            + ", ".join(sorted(varying_cols))
-        )
-    return list(candidate_cols)
 
 
 def aggregate_by_group(
@@ -93,7 +60,13 @@ def aggregate_by_group(
     first_agg_candidates = [
         column for column in df.columns if column in cols_to_use - mean_agg_cols
     ]
-    first_agg_cols = _constant_value_columns(df, [group_col], first_agg_candidates)
+    first_agg_cols = get_groupwise_constant_cols(df, [group_col], first_agg_candidates)
+    varying_first_cols = sorted(set(first_agg_candidates) - set(first_agg_cols))
+    if varying_first_cols:
+        raise ValueError(
+            "Non-numeric columns must be constant within each group: "
+            + ", ".join(varying_first_cols)
+        )
 
     df = df.copy()
     df = df.drop(columns=list(cols_to_drop))
@@ -159,11 +132,17 @@ def aggregate_over_seeds(
         for column in df.columns
         if column not in {*valid_config_cols, seed_col, *valid_metric_cols}
     ]
-    passthrough_cols = _constant_value_columns(
+    passthrough_cols = get_groupwise_constant_cols(
         df,
         valid_config_cols,
         passthrough_candidates,
     )
+    varying_passthrough_cols = sorted(set(passthrough_candidates) - set(passthrough_cols))
+    if varying_passthrough_cols:
+        raise ValueError(
+            "Non-numeric columns must be constant within each group: "
+            + ", ".join(varying_passthrough_cols)
+        )
 
     agg_dict: dict[str, str | list[str]] = {
         **{metric: agg_funcs for metric in valid_metric_cols},

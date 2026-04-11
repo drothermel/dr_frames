@@ -7,6 +7,7 @@ Common entry points:
 - `select_subset`, `filter_to_values`, and `filter_to_range` for filtering
 - `coerce_numeric_cols` and `coerce_string_cols` for dtype cleanup
 - `aggregate_over_seeds` and `aggregate_by_group` for grouped reductions
+- `get_constant_cols` and `get_groupwise_constant_cols` for constant-value inspection
 - `move_cols_to_beginning` and `strip_col_prefixes` for column cleanup
 
 ## Installation
@@ -53,6 +54,7 @@ result = (
 | **cells** | Cell-level operations | `ensure_column`, `map_column_with_fallback`, `force_set_cell` |
 | **types** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
 | **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group`, `unique_non_null` |
+| **constant** | Constant-value inspection | `get_constant_cols`, `get_groupwise_constant_cols` |
 | **pipeline** | Pipe-friendly orchestration | `maybe_pipe` |
 | **parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
@@ -131,7 +133,14 @@ from dr_frames import (
     aggregate_by_group,      # generic grouped aggregation
     unique_non_null,         # unique values excluding null
     unique_by_col,           # unique values in column
-    get_constant_cols,       # cols with single value
+)
+```
+
+### Constants
+```python
+from dr_frames import (
+    get_constant_cols,           # cols constant across the full dataframe
+    get_groupwise_constant_cols, # cols constant within each group
 )
 ```
 
