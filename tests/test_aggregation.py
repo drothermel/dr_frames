@@ -109,7 +109,9 @@ def test_aggregate_over_seeds_raises_without_config_cols(metrics_df: pd.DataFram
         aggregate_over_seeds(metrics_df, config_cols=[])
 
 
-def test_aggregate_over_seeds_raises_if_seed_is_in_config_cols(metrics_df: pd.DataFrame):
+def test_aggregate_over_seeds_raises_if_seed_is_in_config_cols(
+    metrics_df: pd.DataFrame,
+):
     with pytest.raises(ValueError, match="cannot be included in config_cols"):
         aggregate_over_seeds(metrics_df, config_cols=["config_a", "seed"])
 

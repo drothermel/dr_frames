@@ -50,7 +50,8 @@ class DataFormat(BaseModel):
                 DataField(
                     id_string=key,
                     description=value,
-                    column_name=overrides.get(key) or (key if key in df.columns else None),
+                    column_name=overrides.get(key)
+                    or (key if key in df.columns else None),
                 )
                 for key, value in field_descriptions.items()
             ]
@@ -118,7 +119,9 @@ class DataFormat(BaseModel):
 
     def get_metric(self, pattern: str) -> MetricDataField | None:
         for metric in self.metrics:
-            if pattern in (metric.column_name or "") or pattern in (metric.display_name or ""):
+            if pattern in (metric.column_name or "") or pattern in (
+                metric.display_name or ""
+            ):
                 return metric
         return None
 

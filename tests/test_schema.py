@@ -120,7 +120,10 @@ def test_data_format_from_df_without_field_descriptions_uses_custom_metric_prefi
         }
     )
     fmt = DataFormat.from_df(df, metric_prefix="metric/")
-    assert [metric.column_name for metric in fmt.metrics] == ["metric/loss", "metric/acc"]
+    assert [metric.column_name for metric in fmt.metrics] == [
+        "metric/loss",
+        "metric/acc",
+    ]
     assert fmt.fields == []
 
 
@@ -158,6 +161,7 @@ def test_data_format_get_metric():
     fmt = DataFormat.from_df(df)
     metric = fmt.get_metric("loss")
     assert metric is not None
+    assert metric.column_name is not None
     assert "loss" in metric.column_name
 
 

@@ -49,7 +49,7 @@ def filter_to_range(
 
 
 def make_filter_fxn(
-    filters: list[tuple[Callable, ...]],
+    filters: list[tuple[Callable[..., pd.DataFrame], *tuple[object, ...]]],
 ) -> Callable[[pd.DataFrame], pd.DataFrame]:
     def apply(df: pd.DataFrame) -> pd.DataFrame:
         for fn, *args in filters:

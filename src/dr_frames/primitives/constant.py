@@ -30,7 +30,9 @@ def get_groupwise_constant_cols(
 
     valid_group_cols = [column for column in group_cols if column in df.columns]
     if not valid_group_cols:
-        raise ValueError("At least one grouping column must be present in the dataframe.")
+        raise ValueError(
+            "At least one grouping column must be present in the dataframe."
+        )
 
     valid_candidate_cols = [
         column
@@ -43,5 +45,8 @@ def get_groupwise_constant_cols(
     return [
         column
         for column in valid_candidate_cols
-        if not df.groupby(valid_group_cols, dropna=False)[column].nunique(dropna=False).gt(1).any()
+        if not df.groupby(valid_group_cols, dropna=False)[column]
+        .nunique(dropna=False)
+        .gt(1)
+        .any()
     ]

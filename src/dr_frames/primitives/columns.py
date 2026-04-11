@@ -20,7 +20,9 @@ __all__ = [
 ]
 
 
-def _skip_columns(columns: Sequence[str] | pd.Index, skip: Iterable[str] = ()) -> list[str]:
+def _skip_columns(
+    columns: Sequence[str] | pd.Index, skip: Iterable[str] = ()
+) -> list[str]:
     skip_set = set(skip)
     return [column for column in columns if column not in skip_set]
 
@@ -50,7 +52,9 @@ def strip_col_prefixes(
     df: pd.DataFrame, prefix: str, skip: Iterable[str] = ()
 ) -> pd.DataFrame:
     return df.rename(
-        columns={c: c.removeprefix(prefix) for c in get_cols_by_prefix(df, prefix, skip)}
+        columns={
+            c: c.removeprefix(prefix) for c in get_cols_by_prefix(df, prefix, skip)
+        }
     )
 
 
@@ -85,12 +89,16 @@ def move_cols_with_prefix_to_end(
 
 def _all_non_null_values_are_strings(series: pd.Series) -> bool:
     non_null = series.dropna()
-    return not non_null.empty and non_null.map(lambda value: isinstance(value, str)).all()
+    return (
+        not non_null.empty and non_null.map(lambda value: isinstance(value, str)).all()
+    )
 
 
 def _contains_any_strings(series: pd.Series) -> bool:
     non_null = series.dropna()
-    return not non_null.empty and non_null.map(lambda value: isinstance(value, str)).any()
+    return (
+        not non_null.empty and non_null.map(lambda value: isinstance(value, str)).any()
+    )
 
 
 def drop_all_null_cols(

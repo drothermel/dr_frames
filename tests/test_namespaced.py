@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any, cast
+
 import pandas as pd
 
 from dr_frames import group_namespaced_values
@@ -38,7 +40,12 @@ def test_group_namespaced_values_prefers_longest_prefix_and_tuple_input():
 def test_group_namespaced_values_raises_for_invalid_prefix_items():
     df = pd.DataFrame({"name": ["apple"]})
     try:
-        group_namespaced_values(df, "name", [(1, "fruit")], output_col="group")
+        group_namespaced_values(
+            df,
+            "name",
+            cast(Any, [(1, "fruit")]),
+            output_col="group",
+        )
     except AssertionError as exc:
         assert "Prefix keys must be strings" in str(exc)
     else:

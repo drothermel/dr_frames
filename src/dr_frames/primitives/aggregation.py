@@ -16,7 +16,9 @@ __all__ = [
 def _validate_group_columns(df: pd.DataFrame, group_cols: Sequence[str]) -> list[str]:
     valid_group_cols = [column for column in group_cols if column in df.columns]
     if not valid_group_cols:
-        raise ValueError("At least one grouping column must be present in the dataframe.")
+        raise ValueError(
+            "At least one grouping column must be present in the dataframe."
+        )
     return valid_group_cols
 
 
@@ -100,9 +102,7 @@ def aggregate_over_seeds(
         raise ValueError("No metric columns found for aggregation.")
 
     duplicate_seed_counts = (
-        df.groupby([*valid_config_cols, seed_col], dropna=False)
-        .size()
-        .gt(1)
+        df.groupby([*valid_config_cols, seed_col], dropna=False).size().gt(1)
     )
     if duplicate_seed_counts.any():
         raise ValueError(
@@ -119,7 +119,9 @@ def aggregate_over_seeds(
         valid_config_cols,
         passthrough_candidates,
     )
-    varying_passthrough_cols = sorted(set(passthrough_candidates) - set(passthrough_cols))
+    varying_passthrough_cols = sorted(
+        set(passthrough_candidates) - set(passthrough_cols)
+    )
     if varying_passthrough_cols:
         raise ValueError(
             "Non-numeric columns must be constant within each group: "
