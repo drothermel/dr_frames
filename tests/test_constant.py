@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from dr_frames import get_constant_cols, get_groupwise_constant_cols
 
@@ -44,9 +45,8 @@ def test_get_groupwise_constant_cols_skips_missing_candidates():
 
 def test_get_groupwise_constant_cols_raises_without_valid_group_cols():
     df = pd.DataFrame({"dataset": ["c4", "c4"]})
-    try:
+    with pytest.raises(
+        ValueError,
+        match="At least one grouping column must be present in the dataframe",
+    ):
         get_groupwise_constant_cols(df, ["group"], ["dataset"])
-    except ValueError as exc:
-        assert "At least one grouping column" in str(exc)
-    else:
-        raise AssertionError("Expected ValueError")

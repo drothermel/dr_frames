@@ -37,6 +37,19 @@ def test_data_field_resolve_column():
         field2.resolve_column(df)
 
 
+def test_data_field_resolve_column_ignores_stale_override():
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    field = DataField(id_string="a", column_name="stale_name")
+    assert field.resolve_column(df) == "a"
+
+
+def test_data_field_resolve_column_raises_when_override_is_stale_and_id_missing():
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    field = DataField(id_string="missing", column_name="stale_name")
+    with pytest.raises(ValueError, match="Cannot resolve column"):
+        field.resolve_column(df)
+
+
 def test_data_field_infer_altair_type():
     df = pd.DataFrame(
         {
@@ -99,6 +112,18 @@ def test_data_format_from_dict_applies_column_overrides():
     assert fmt.fields[0].column_name == "a_col"
 
 
+def test_data_format_from_dict_drops_invalid_column_overrides():
+    df = pd.DataFrame({"b": [3, 4]})
+    fmt = DataFormat.from_dict(
+        {"a": "Column A description"},
+        df,
+        column_overrides={"a": "missing_col"},
+    )
+    assert fmt.fields[0].column_name is None
+    assert fmt.column_overrides == {}
+    assert fmt.is_fully_resolved is False
+
+
 def test_data_format_from_df_with_metrics():
     df = pd.DataFrame(
         {
@@ -125,6 +150,20 @@ def test_data_format_from_df_without_field_descriptions_uses_custom_metric_prefi
         "metric/acc",
     ]
     assert fmt.fields == []
+
+
+def test_data_format_from_df_drops_invalid_column_overrides():
+    df = pd.DataFrame({"a_col": [1, 2]})
+    fmt = DataFormat.from_df(
+        df,
+        field_descriptions={"a": "Column A description", "b": "Missing"},
+        column_overrides={"a": "a_col", "b": "missing_col"},
+    )
+    a_field = next(field for field in fmt.fields if field.id_string == "a")
+    b_field = next(field for field in fmt.fields if field.id_string == "b")
+    assert a_field.column_name == "a_col"
+    assert b_field.column_name is None
+    assert fmt.column_overrides == {"a": "a_col"}
 
 
 def test_data_format_is_fully_resolved():

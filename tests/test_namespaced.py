@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, cast
 
 import pandas as pd
+import pytest
 
 from dr_frames import group_namespaced_values
 from dr_frames.primitives.namespaced import (
@@ -39,17 +40,36 @@ def test_group_namespaced_values_prefers_longest_prefix_and_tuple_input():
 
 def test_group_namespaced_values_raises_for_invalid_prefix_items():
     df = pd.DataFrame({"name": ["apple"]})
-    try:
+    with pytest.raises(TypeError, match="Prefix keys must be strings"):
         group_namespaced_values(
             df,
             "name",
             cast(Any, [(1, "fruit")]),
             output_col="group",
         )
-    except AssertionError as exc:
-        assert "Prefix keys must be strings" in str(exc)
-    else:
-        raise AssertionError("Expected AssertionError")
+
+
+def test_group_namespaced_values_raises_for_empty_prefix():
+    df = pd.DataFrame({"name": ["apple"]})
+    with pytest.raises(ValueError, match="non-empty after stripping whitespace"):
+        group_namespaced_values(
+            df,
+            "name",
+            {"   ": "fruit"},
+            output_col="group",
+        )
+
+
+def test_group_namespaced_values_leaves_array_like_values_unchanged():
+    df = pd.DataFrame({"name": [("apple", "banana"), "banana"]})
+    result = group_namespaced_values(
+        df,
+        "name",
+        {"banana": "fruit_b"},
+        output_col="group",
+    )
+    assert result.iloc[0] == ("apple", "banana")
+    assert result.iloc[1] == "fruit_b"
 
 
 def test_group_namespaced_values_module_export_matches_top_level():

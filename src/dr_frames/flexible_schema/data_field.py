@@ -31,7 +31,7 @@ class DataField(BaseModel):
         return self.column_name is not None
 
     def resolve_column(self, df: pd.DataFrame) -> str:
-        if self.column_name:
+        if self.column_name and self.column_name in df.columns:
             return self.column_name
         if self.id_string in df.columns:
             return self.id_string

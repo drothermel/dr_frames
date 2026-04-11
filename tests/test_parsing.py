@@ -23,6 +23,10 @@ def test_parse_list_string_null():
     assert parse_list_string(pd.NA) is None
 
 
+def test_parse_list_string_non_scalar_input():
+    assert parse_list_string([1, 2, 3]) is None
+
+
 def test_parse_list_string_empty_list():
     assert parse_list_string("[]") == []
 

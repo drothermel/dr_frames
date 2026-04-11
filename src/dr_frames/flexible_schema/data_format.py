@@ -15,6 +15,31 @@ class DataFormat(BaseModel):
     column_overrides: dict[str, str] = Field(default_factory=dict)
     metric_prefix: str = "eval/"
 
+    @staticmethod
+    def _validated_column_overrides(
+        df: pd.DataFrame,
+        column_overrides: dict[str, str] | None,
+    ) -> dict[str, str]:
+        if column_overrides is None:
+            return {}
+        return {
+            field_id: column_name
+            for field_id, column_name in column_overrides.items()
+            if column_name in df.columns
+        }
+
+    @staticmethod
+    def _resolve_field_column_name(
+        field_id: str,
+        df: pd.DataFrame,
+        overrides: dict[str, str],
+    ) -> str | None:
+        if field_id in overrides:
+            return overrides[field_id]
+        if field_id in df.columns:
+            return field_id
+        return None
+
     @classmethod
     def from_dict(
         cls,
@@ -22,12 +47,12 @@ class DataFormat(BaseModel):
         df: pd.DataFrame,
         column_overrides: dict[str, str] | None = None,
     ) -> "DataFormat":
-        overrides = column_overrides or {}
+        overrides = cls._validated_column_overrides(df, column_overrides)
         fields = [
             DataField(
                 id_string=key,
                 description=value,
-                column_name=overrides.get(key) or (key if key in df.columns else None),
+                column_name=cls._resolve_field_column_name(key, df, overrides),
             )
             for key, value in field_descriptions.items()
         ]
@@ -42,7 +67,7 @@ class DataFormat(BaseModel):
         column_overrides: dict[str, str] | None = None,
         metric_prefix: str = "eval/",
     ) -> "DataFormat":
-        overrides = column_overrides or {}
+        overrides = cls._validated_column_overrides(df, column_overrides)
         defaults = cls()
 
         if field_descriptions is not None:
@@ -50,8 +75,7 @@ class DataFormat(BaseModel):
                 DataField(
                     id_string=key,
                     description=value,
-                    column_name=overrides.get(key)
-                    or (key if key in df.columns else None),
+                    column_name=cls._resolve_field_column_name(key, df, overrides),
                 )
                 for key, value in field_descriptions.items()
             ]
@@ -59,8 +83,11 @@ class DataFormat(BaseModel):
             fields = [
                 field.model_copy(
                     update={
-                        "column_name": overrides.get(field.id_string)
-                        or (field.id_string if field.id_string in df.columns else None)
+                        "column_name": cls._resolve_field_column_name(
+                            field.id_string,
+                            df,
+                            overrides,
+                        )
                     }
                 )
                 if field.column_name is None

@@ -30,6 +30,24 @@ def test_select_subset_with_null():
     assert result.iloc[0]["b"] == "y"
 
 
+def test_select_subset_raises_for_missing_column(sample_df: pd.DataFrame):
+    try:
+        select_subset(sample_df, {"missing": "x"})
+    except ValueError as exc:
+        assert "Column 'missing' not present" in str(exc)
+    else:
+        raise AssertionError("Expected ValueError")
+
+
+def test_select_subset_raises_for_non_string_column_key(sample_df: pd.DataFrame):
+    try:
+        select_subset(sample_df, [(1, "x")])  # type: ignore[list-item]
+    except TypeError as exc:
+        assert "must be strings" in str(exc)
+    else:
+        raise AssertionError("Expected TypeError")
+
+
 def test_filter_to_values_single_value(sample_df: pd.DataFrame):
     result = filter_to_values(sample_df, "category", ["x"])
     assert len(result) == 2
@@ -100,6 +118,24 @@ def test_select_best_by_metric_higher_is_better(metrics_df: pd.DataFrame):
     )
     assert len(result) == 2
     assert result[result["config_a"] == "a"]["eval/accuracy"].iloc[0] == 0.9
+
+
+def test_select_best_by_metric_skips_groups_with_all_missing_metrics():
+    df = pd.DataFrame(
+        {
+            "config": ["a", "a", "b", "b"],
+            "seed": [1, 2, 1, 2],
+            "eval/loss": [0.5, 0.4, None, None],
+        }
+    )
+    result = select_best_by_metric(
+        df,
+        group_cols=["config"],
+        metric_col="eval/loss",
+        lower_is_better=True,
+    )
+    assert list(result["config"]) == ["a"]
+    assert list(result["eval/loss"]) == [0.4]
 
 
 def test_make_filter_fxn(sample_df: pd.DataFrame):

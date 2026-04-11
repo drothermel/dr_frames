@@ -39,6 +39,13 @@ def test_rename_columns_inplace_and_missing_mapping_noop():
     assert list(df.columns) == ["a", "b"]
 
 
+def test_rename_columns_inplace_applies_changes():
+    df = pd.DataFrame({"a": [1], "b": [2]})
+    result = rename_columns(df, {"a": "x"}, inplace=True)
+    assert result is df
+    assert list(df.columns) == ["x", "b"]
+
+
 def test_masked_getter():
     df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"]})
     mask = df["a"] == 2

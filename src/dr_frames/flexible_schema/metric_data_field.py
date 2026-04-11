@@ -8,7 +8,7 @@ class MetricDataField(DataField):
     metric_type: str = ""
 
     @classmethod
-    def from_column_name(cls, col: str) -> "MetricDataField":
+    def from_column_name(cls, col: str) -> MetricDataField:
         parts = col.split("/")
         if len(parts) >= 4:
             group = parts[1]

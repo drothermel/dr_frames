@@ -22,7 +22,12 @@ def select_subset(
     items = filters.items() if isinstance(filters, Mapping) else filters
     mask = pd.Series(True, index=df.index)
     for column, value in items:
-        assert column in df.columns, f"Column '{column}' not present in DataFrame."
+        if not isinstance(column, str):
+            raise TypeError(
+                f"Filter column names must be strings, received {type(column)!r}."
+            )
+        if column not in df.columns:
+            raise ValueError(f"Column '{column}' not present in DataFrame.")
         if value is None or (isinstance(value, float) and pd.isna(value)):
             mask &= df[column].isna()
         else:

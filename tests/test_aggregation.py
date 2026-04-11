@@ -109,6 +109,11 @@ def test_aggregate_over_seeds_raises_without_config_cols(metrics_df: pd.DataFram
         aggregate_over_seeds(metrics_df, config_cols=[])
 
 
+def test_aggregate_over_seeds_raises_for_missing_config_cols(metrics_df: pd.DataFrame):
+    with pytest.raises(ValueError, match="Grouping columns not found in dataframe"):
+        aggregate_over_seeds(metrics_df, config_cols=["config_a", "missing_config"])
+
+
 def test_aggregate_over_seeds_raises_if_seed_is_in_config_cols(
     metrics_df: pd.DataFrame,
 ):
@@ -179,3 +184,19 @@ def test_aggregate_over_seeds_supports_custom_agg_funcs():
         agg_funcs=["mean", "count"],
     )
     assert list(result.columns) == ["config", "eval/loss_mean", "eval/loss_count"]
+
+
+def test_aggregate_over_seeds_raises_for_missing_explicit_metric_cols():
+    df = pd.DataFrame(
+        {
+            "config": ["a", "a"],
+            "seed": [1, 2],
+            "eval/loss": [0.5, 0.7],
+        }
+    )
+    with pytest.raises(ValueError, match="Metric columns not found in dataframe"):
+        aggregate_over_seeds(
+            df,
+            config_cols=["config"],
+            metric_cols=["eval/loss", "eval/accuracy"],
+        )

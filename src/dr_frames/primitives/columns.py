@@ -67,7 +67,10 @@ def rename_columns(
     target = df if inplace else df.copy()
     existing_map = {old: new for old, new in mapping.items() if old in target.columns}
     if existing_map:
-        target = target.rename(columns=existing_map)
+        if inplace:
+            target.rename(columns=existing_map, inplace=True)
+        else:
+            target = target.rename(columns=existing_map)
     return target
 
 

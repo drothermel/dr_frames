@@ -14,12 +14,16 @@ __all__ = [
 
 
 def _validate_group_columns(df: pd.DataFrame, group_cols: Sequence[str]) -> list[str]:
-    valid_group_cols = [column for column in group_cols if column in df.columns]
-    if not valid_group_cols:
+    if not group_cols:
         raise ValueError(
             "At least one grouping column must be present in the dataframe."
         )
-    return valid_group_cols
+    missing_group_cols = [column for column in group_cols if column not in df.columns]
+    if missing_group_cols:
+        raise ValueError(
+            "Grouping columns not found in dataframe: " + ", ".join(missing_group_cols)
+        )
+    return list(group_cols)
 
 
 def aggregate_by_group(
@@ -93,11 +97,21 @@ def aggregate_over_seeds(
     if agg_funcs is None:
         agg_funcs = ["mean", "std", "count"]
 
-    if metric_cols is None:
-        metric_cols = [col for col in df.columns if col.startswith("eval/")]
-
     valid_config_cols = _validate_group_columns(df, config_cols)
-    valid_metric_cols = [metric for metric in metric_cols if metric in df.columns]
+
+    if metric_cols is None:
+        valid_metric_cols = [col for col in df.columns if col.startswith("eval/")]
+    else:
+        missing_metric_cols = [
+            metric for metric in metric_cols if metric not in df.columns
+        ]
+        if missing_metric_cols:
+            raise ValueError(
+                "Metric columns not found in dataframe: "
+                + ", ".join(missing_metric_cols)
+            )
+        valid_metric_cols = metric_cols
+
     if not valid_metric_cols:
         raise ValueError("No metric columns found for aggregation.")
 

@@ -15,5 +15,12 @@ def maybe_pipe(
     *args: Any,
     **kwargs: Any,
 ) -> pd.DataFrame:
-    should_apply = condition(df) if callable(condition) else bool(condition)
+    if callable(condition):
+        should_apply = condition(df)
+    elif isinstance(condition, (pd.Series, pd.DataFrame)):
+        should_apply = not condition.empty
+    elif hasattr(condition, "size"):
+        should_apply = bool(getattr(condition, "size", 0)) and condition.size != 0
+    else:
+        should_apply = bool(condition)
     return df.pipe(func, *args, **kwargs) if should_apply else df

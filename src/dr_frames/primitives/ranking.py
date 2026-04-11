@@ -11,8 +11,13 @@ def select_best_by_metric(
     metric_col: str,
     lower_is_better: bool = True,
 ) -> pd.DataFrame:
+    valid_rows = df[df[metric_col].notna()]
+    if valid_rows.empty:
+        return valid_rows.copy()
+
     if lower_is_better:
-        idx = df.groupby(group_cols)[metric_col].idxmin()
+        idx = valid_rows.groupby(group_cols)[metric_col].idxmin()
     else:
-        idx = df.groupby(group_cols)[metric_col].idxmax()
-    return df.loc[idx].copy()
+        idx = valid_rows.groupby(group_cols)[metric_col].idxmax()
+    valid_idx = idx.dropna().astype(int)
+    return df.loc[valid_idx].copy()
