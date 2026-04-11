@@ -5,7 +5,6 @@ import pandas as pd
 from dr_frames.aggregation import (
     aggregate_over_seeds,
     apply_aggregations,
-    fillna_with_defaults,
     get_constant_cols,
     maybe_pipe,
     unique_by_col,
@@ -52,13 +51,6 @@ def test_get_constant_cols_single_row():
     df = pd.DataFrame({"a": [1], "b": [2]})
     result = get_constant_cols(df)
     assert result == {}
-
-
-def test_fillna_with_defaults():
-    df = pd.DataFrame({"a": [1, None, 3], "b": [None, "y", None]})
-    result = fillna_with_defaults(df, {"a": 0, "b": "default"})
-    assert result["a"].tolist() == [1.0, 0.0, 3.0]
-    assert result["b"].tolist() == ["default", "y", "default"]
 
 
 def test_maybe_pipe_true():

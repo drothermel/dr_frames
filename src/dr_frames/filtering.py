@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any, cast
+from typing import Any
 
 import pandas as pd
 
 __all__ = [
     "select_subset",
-    "apply_filters_to_df",
-    "filter_to_value",
     "filter_to_values",
     "filter_to_range",
     "filter_to_best_metric",
@@ -33,29 +31,8 @@ def select_subset(
     return df.loc[mask].copy()
 
 
-def apply_filters_to_df(
-    df: pd.DataFrame, filters: dict[str, Sequence[Any]]
-) -> pd.DataFrame:
-    df = df.copy()
-    avail_cols = set(df.columns.tolist())
-    for k, v in filters.items():
-        if k not in avail_cols:
-            continue
-        df = cast(pd.DataFrame, df[df[k].isin(v)])
-    return df.reset_index(drop=True)
-
-
-def filter_to_value(
-    df: pd.DataFrame, column: str, value: float | str | None
-) -> pd.DataFrame:
-    """Filter to rows matching a specific value. Use None to match NaN values."""
-    if value is None:
-        return df[df[column].isna()].copy()
-    return df[df[column] == value].copy()
-
-
 def filter_to_values(
-    df: pd.DataFrame, column: str, values: list[float | str | None]
+    df: pd.DataFrame, column: str, values: Sequence[float | str | None]
 ) -> pd.DataFrame:
     """Filter to rows matching any value in list. Use None in list to include NaN."""
     if None in values:

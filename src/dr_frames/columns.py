@@ -7,9 +7,6 @@ import pandas as pd
 from dr_frames.types import is_string_series
 
 __all__ = [
-    "apply_skip",
-    "contained_cols",
-    "remaining_cols",
     "get_cols_by_prefix",
     "get_cols_by_contains",
     "strip_col_prefixes",
@@ -21,22 +18,16 @@ __all__ = [
 ]
 
 
-def _strip_prefix(text: str, prefix: str) -> str:
-    return text[len(prefix) :] if text.startswith(prefix) else text
-
-
-def apply_skip(
-    columns: Sequence[str] | pd.Index, skip: Iterable[str] = ()
-) -> list[str]:
+def _skip_columns(columns: Sequence[str] | pd.Index, skip: Iterable[str] = ()) -> list[str]:
     skip_set = set(skip)
     return [column for column in columns if column not in skip_set]
 
 
-def contained_cols(df: pd.DataFrame, columns: Sequence[str]) -> list[str]:
+def _contained_columns(df: pd.DataFrame, columns: Sequence[str]) -> list[str]:
     return [column for column in columns if column in df.columns]
 
 
-def remaining_cols(df: pd.DataFrame, cols: Iterable[str]) -> list[str]:
+def _remaining_columns(df: pd.DataFrame, cols: Iterable[str]) -> list[str]:
     skip_set = set(cols)
     return [column for column in df.columns if column not in skip_set]
 
@@ -44,22 +35,20 @@ def remaining_cols(df: pd.DataFrame, cols: Iterable[str]) -> list[str]:
 def get_cols_by_prefix(
     df: pd.DataFrame, prefix: str, skip: Iterable[str] = ()
 ) -> list[str]:
-    return [c for c in apply_skip(df.columns, skip) if c.startswith(prefix)]
+    return [c for c in _skip_columns(df.columns, skip) if c.startswith(prefix)]
 
 
 def get_cols_by_contains(
     df: pd.DataFrame, substr: str, skip: Iterable[str] = ()
 ) -> list[str]:
-    return [c for c in apply_skip(df.columns, skip) if substr in c]
+    return [c for c in _skip_columns(df.columns, skip) if substr in c]
 
 
 def strip_col_prefixes(
     df: pd.DataFrame, prefix: str, skip: Iterable[str] = ()
 ) -> pd.DataFrame:
     return df.rename(
-        columns={
-            c: _strip_prefix(c, prefix) for c in get_cols_by_prefix(df, prefix, skip)
-        }
+        columns={c: c.removeprefix(prefix) for c in get_cols_by_prefix(df, prefix, skip)}
     )
 
 
@@ -79,19 +68,19 @@ def strip_col_prefixes_batch(
 
 
 def move_cols_to_beginning(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
-    return df.loc[:, [*contained_cols(df, cols), *remaining_cols(df, cols)]]
+    return df.loc[:, [*_contained_columns(df, cols), *_remaining_columns(df, cols)]]
 
 
 def move_numeric_cols_to_end(df: pd.DataFrame) -> pd.DataFrame:
     numeric_columns = df.select_dtypes(include=["number"]).columns.tolist()
-    return df.loc[:, [*remaining_cols(df, numeric_columns), *numeric_columns]]
+    return df.loc[:, [*_remaining_columns(df, numeric_columns), *numeric_columns]]
 
 
 def move_cols_with_prefix_to_end(
     df: pd.DataFrame, prefix: str, skip: Iterable[str] = ()
 ) -> pd.DataFrame:
     target_columns = get_cols_by_prefix(df, prefix, skip)
-    return df.loc[:, [*remaining_cols(df, target_columns), *target_columns]]
+    return df.loc[:, [*_remaining_columns(df, target_columns), *target_columns]]
 
 
 def drop_all_null_cols(df: pd.DataFrame) -> pd.DataFrame:

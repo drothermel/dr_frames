@@ -3,42 +3,15 @@ from __future__ import annotations
 import pandas as pd
 
 from dr_frames.columns import (
-    apply_skip,
-    contained_cols,
     drop_all_null_cols,
     get_cols_by_contains,
     get_cols_by_prefix,
     move_cols_to_beginning,
     move_cols_with_prefix_to_end,
     move_numeric_cols_to_end,
-    remaining_cols,
     strip_col_prefixes,
     strip_col_prefixes_batch,
 )
-
-
-def test_apply_skip():
-    cols = ["a", "b", "c", "d"]
-    result = apply_skip(cols, ["b", "d"])
-    assert result == ["a", "c"]
-
-
-def test_apply_skip_empty():
-    cols = ["a", "b", "c"]
-    result = apply_skip(cols, [])
-    assert result == ["a", "b", "c"]
-
-
-def test_contained_cols(sample_df: pd.DataFrame):
-    result = contained_cols(sample_df, ["name", "value", "nonexistent"])
-    assert result == ["name", "value"]
-
-
-def test_remaining_cols(sample_df: pd.DataFrame):
-    result = remaining_cols(sample_df, ["name", "value"])
-    assert "category" in result
-    assert "name" not in result
-    assert "value" not in result
 
 
 def test_get_cols_by_prefix(sample_df: pd.DataFrame):

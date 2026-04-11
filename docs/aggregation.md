@@ -72,15 +72,6 @@ def get_constant_cols(
 ```
 Return `{column: value}` for columns with a single unique value.
 
-### fillna_with_defaults
-```python
-def fillna_with_defaults(
-    df: pd.DataFrame,
-    defaults: Mapping[str, object] | Iterable[tuple[str, object]]
-) -> pd.DataFrame
-```
-Fill nulls using a defaults dict. Only affects columns present in df.
-
 ### maybe_pipe
 ```python
 def maybe_pipe(

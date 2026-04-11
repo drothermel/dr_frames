@@ -31,13 +31,13 @@ def load_and_clean(path: str, id_cols: list[str]) -> pd.DataFrame:
 Filter experiments to specific configurations:
 
 ```python
-from dr_frames import filter_to_range, filter_to_value, make_filter_fxn
+from dr_frames import filter_to_range, filter_to_values, make_filter_fxn
 
 # Define reusable filter
 best_settings = make_filter_fxn([
-    (filter_to_value, "optimizer", "adamw"),
+    (filter_to_values, "optimizer", ["adamw"]),
     (filter_to_range, "lr", 0.0001, 0.01),
-    (filter_to_value, "scheduler", "cosine"),
+    (filter_to_values, "scheduler", ["cosine"]),
 ])
 
 # Apply to any dataframe
@@ -142,7 +142,6 @@ Work with columns that may or may not exist:
 ```python
 from dr_frames import (
     apply_if_column,
-    contained_cols,
     ensure_column,
     rename_columns,
 )
@@ -161,7 +160,7 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = apply_if_column(df, "score", lambda s: s / 100)
 
     # Get subset of columns that exist
-    keep = contained_cols(df, ["id", "name", "score", "status"])
+    keep = [c for c in ["id", "name", "score", "status"] if c in df.columns]
     return df[keep]
 ```
 
@@ -195,12 +194,18 @@ best = filter_to_best_metric(
 Handle stringified lists from CSV exports:
 
 ```python
-from dr_frames import is_homogeneous, parse_first_element, sum_list_elements
+from dr_frames import parse_list_string
 
-# Add computed columns from string lists
-df["granularity"] = df["expert_sizes"].apply(parse_first_element)
-df["total_experts"] = df["num_experts"].apply(sum_list_elements)
-df["is_uniform"] = df["expert_sizes"].apply(is_homogeneous)
+# Parse once, then compute downstream values directly
+df["parsed_sizes"] = df["expert_sizes"].apply(parse_list_string)
+df["parsed_counts"] = df["num_experts"].apply(parse_list_string)
+df["granularity"] = df["parsed_sizes"].apply(
+    lambda values: float(values[0]) if values else float("nan")
+)
+df["total_experts"] = df["parsed_counts"].apply(
+    lambda values: float(sum(float(item) for item in values)) if values else float("nan")
+)
+df["is_uniform"] = df["parsed_sizes"].apply(lambda values: bool(values) and len(set(values)) == 1)
 
 # Filter to uniform configurations only
 uniform_df = df[df["is_uniform"]]

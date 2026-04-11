@@ -56,8 +56,7 @@ def format_table(
     table_style: str = "lines",
     disable_numparse: bool = True,
 ) -> str | Table:
-    processed_data = _preprocess_data(data)
-    column_names = _get_column_names(data)
+    processed_data, column_names = _normalize_table_data(data)
     config = column_config or {}
     formatted_data = _apply_column_formatting(processed_data, config, column_names)
     final_headers = _resolve_headers(headers, column_names, config)
@@ -105,40 +104,29 @@ def format_coverage_table(
     return result
 
 
-def _preprocess_data(data: list[dict] | pd.DataFrame | list[list]) -> list[list]:
+def _stable_dict_keys(rows: list[dict]) -> list[str]:
+    keys = list(rows[0].keys())
+    keys_set = set(keys)
+    for row in rows[1:]:
+        for key in row.keys():
+            if key not in keys_set:
+                keys.append(key)
+                keys_set.add(key)
+    return keys
+
+
+def _normalize_table_data(
+    data: list[dict] | pd.DataFrame | list[list],
+) -> tuple[list[list], list[str]]:
     if isinstance(data, pd.DataFrame):
-        return data.to_numpy().tolist()
-    elif isinstance(data, list) and len(data) > 0:
+        return data.to_numpy().tolist(), list(data.columns)
+    if isinstance(data, list) and len(data) > 0:
         if isinstance(data[0], dict):
-            # Build stable union of all keys: preserve first-row order, then append new keys
-            keys = list(data[0].keys())
-            keys_set = set(keys)
-            for row in data[1:]:
-                for key in row.keys():  # type: ignore[union-attr]
-                    if key not in keys_set:
-                        keys.append(key)
-                        keys_set.add(key)
-            return [[row.get(key) for key in keys] for row in data]  # type: ignore[union-attr]
-        else:
-            return list(data)  # type: ignore[arg-type]
-    return []
-
-
-def _get_column_names(data: list[dict] | pd.DataFrame | list[list]) -> list[str]:
-    if isinstance(data, pd.DataFrame):
-        return list(data.columns)
-    elif isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
-        # Build stable union of all keys: preserve first-row order, then append new keys
-        keys = list(data[0].keys())
-        keys_set = set(keys)
-        for row in data[1:]:
-            for key in row.keys():  # type: ignore[union-attr]
-                if key not in keys_set:
-                    keys.append(key)
-                    keys_set.add(key)
-        return keys
-    else:
-        return []
+            rows = data
+            keys = _stable_dict_keys(rows)
+            return [[row.get(key) for key in keys] for row in rows], keys
+        return list(data), []
+    return [], []
 
 
 def _apply_column_formatting(

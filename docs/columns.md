@@ -4,33 +4,6 @@ Column selection, reordering, and prefix operations.
 
 ## Functions
 
-### apply_skip
-```python
-def apply_skip(
-    columns: Sequence[str] | pd.Index,
-    skip: Iterable[str] = ()
-) -> list[str]
-```
-Return `columns` excluding any names present in `skip`.
-
-### contained_cols
-```python
-def contained_cols(
-    df: pd.DataFrame,
-    columns: Sequence[str]
-) -> list[str]
-```
-Return the subset of `columns` that exist in the dataframe.
-
-### remaining_cols
-```python
-def remaining_cols(
-    df: pd.DataFrame,
-    cols: Iterable[str]
-) -> list[str]
-```
-Return dataframe columns that are NOT listed in `cols`.
-
 ### get_cols_by_prefix
 ```python
 def get_cols_by_prefix(

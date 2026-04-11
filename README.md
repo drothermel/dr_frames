@@ -46,9 +46,9 @@ result = (
 | **cells** | Cell-level operations | `ensure_column`, `map_column_with_fallback`, `force_set_cell` |
 | **types** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
 | **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `apply_aggregations`, `unique_non_null` |
-| **parsing** | String list parsing | `parse_first_element`, `sum_list_elements`, `is_homogeneous` |
+| **parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
-| **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `looks_like_json` |
+| **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `infer_tags_from_series_sample` |
 | **formatting** | Table output | `format_table`, `format_coverage_table` |
 
 ## Documentation
@@ -72,8 +72,6 @@ uv run pdoc dr_frames -o docs/api_html
 ### Column Operations
 ```python
 from dr_frames import (
-    contained_cols,          # cols that exist in df
-    remaining_cols,          # cols NOT in a list
     get_cols_by_prefix,      # cols starting with prefix
     get_cols_by_contains,    # cols containing substring
     move_cols_to_beginning,  # reorder cols
@@ -87,8 +85,6 @@ from dr_frames import (
 ```python
 from dr_frames import (
     select_subset,           # filter by exact column values
-    apply_filters_to_df,     # filter by value lists
-    filter_to_value,         # single value filter
     filter_to_values,        # multi-value filter
     filter_to_range,         # numeric range filter
     filter_to_best_metric,   # keep best per group
@@ -128,7 +124,6 @@ from dr_frames import (
     unique_non_null,         # unique values excluding null
     unique_by_col,           # unique values in column
     get_constant_cols,       # cols with single value
-    fillna_with_defaults,    # fill nulls from dict
     maybe_pipe,              # conditional pipe
 )
 ```
@@ -137,9 +132,6 @@ from dr_frames import (
 ```python
 from dr_frames import (
     parse_list_string,       # "[1,2,3]" -> [1,2,3]
-    parse_first_element,     # "[1,2,3]" -> 1.0
-    sum_list_elements,       # "[1,2,3]" -> 6.0
-    is_homogeneous,          # "[1,1,1]" -> True
 )
 ```
 
@@ -158,9 +150,8 @@ from dr_frames import (
 from dr_frames import (
     DFColInfo,               # catalog of column info
     ColInfo,                 # single column metadata
-    looks_like_json,         # detect JSON strings
-    looks_like_path,         # detect file paths
     infer_series_base_tag_type,  # infer dtype tags
+    infer_tags_from_series_sample,  # sample-based path/json tags
 )
 ```
 

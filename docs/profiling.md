@@ -43,18 +43,6 @@ class ColInfo(BaseModel):
 
 ## Functions
 
-### looks_like_json
-```python
-def looks_like_json(value: Any) -> bool
-```
-Check if value looks like a JSON string (starts with `{` or `[` and parses).
-
-### looks_like_path
-```python
-def looks_like_path(value: Any, path_extensions: set[str]) -> bool
-```
-Check if value looks like a file path (contains `/` or `\`, or has known extension).
-
 ### infer_series_base_tag_type
 ```python
 def infer_series_base_tag_type(
@@ -65,14 +53,6 @@ def infer_series_base_tag_type(
 ```
 Infer tags from series dtype. Adds `"nullable"` if series contains nulls.
 
-### infer_col_name_contains_tags / suffix_tags / prefix_tags
-```python
-def infer_col_name_contains_tags(name: str, mapping: dict) -> set[str]
-def infer_col_name_suffix_tags(name: str, mapping: dict) -> set[str]
-def infer_col_name_prefix_tags(name: str, mapping: dict) -> set[str]
-```
-Infer tags from column name patterns.
-
 ### infer_tags_from_series_sample
 ```python
 def infer_tags_from_series_sample(
@@ -80,7 +60,7 @@ def infer_tags_from_series_sample(
     path_like_extensions: set[str]
 ) -> set[str]
 ```
-Infer tags by sampling first non-null value (detects paths, JSON).
+Infer tags by sampling non-null values and detecting path- or JSON-like content.
 
 ## Default Tags
 

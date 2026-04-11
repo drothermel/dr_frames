@@ -4,32 +4,24 @@ import pandas as pd
 
 from dr_frames.profiling import (
     DFColInfo,
-    infer_col_name_contains_tags,
-    infer_col_name_prefix_tags,
-    infer_col_name_suffix_tags,
     infer_series_base_tag_type,
-    looks_like_json,
-    looks_like_path,
+    infer_tags_from_series_sample,
 )
 
 
-def test_looks_like_path():
+def test_infer_tags_from_series_sample_path():
     extensions = {".json", ".csv", ".parquet"}
-    assert looks_like_path("/path/to/file.json", extensions) is True
-    assert looks_like_path("file.csv", extensions) is True
-    assert looks_like_path("C:\\Users\\file.parquet", extensions) is True
-    assert looks_like_path("not_a_path", extensions) is False
-    assert looks_like_path("", extensions) is False
-    assert looks_like_path(None, extensions) is False
+    series = pd.Series(["/path/to/file.json", "file.csv", "C:\\Users\\file.parquet"])
+    assert "path" in infer_tags_from_series_sample(series, extensions)
 
 
-def test_looks_like_json():
-    assert looks_like_json('{"key": "value"}') is True
-    assert looks_like_json("[1, 2, 3]") is True
-    assert looks_like_json("not json") is False
-    assert looks_like_json("") is False
-    assert looks_like_json(None) is False
-    assert looks_like_json("{invalid}") is False
+def test_infer_tags_from_series_sample_json():
+    series = pd.Series(['{"key": "value"}', "[1, 2, 3]", "not json"])
+    assert "json" in infer_tags_from_series_sample(series, {".json"})
+
+
+def test_infer_tags_from_series_sample_empty():
+    assert infer_tags_from_series_sample(pd.Series([None, pd.NA]), {".json"}) == set()
 
 
 def test_infer_series_base_tag_type():
@@ -57,44 +49,6 @@ def test_infer_series_base_tag_type():
 
     nullable_tags = infer_series_base_tag_type(nullable_series, type_map, default)
     assert "nullable" in nullable_tags
-
-
-def test_infer_col_name_contains_tags():
-    tag_map = {("config", "settings"): "config", ("metric",): "metric"}
-
-    assert "config" in infer_col_name_contains_tags("my_config_col", tag_map)
-    assert "config" in infer_col_name_contains_tags("settings_value", tag_map)
-    assert "metric" in infer_col_name_contains_tags("metric_loss", tag_map)
-    assert len(infer_col_name_contains_tags("other_col", tag_map)) == 0
-
-
-def test_infer_col_name_suffix_tags():
-    tag_map = {("_path", "_dir"): "path", ("_id",): "id"}
-
-    assert "path" in infer_col_name_suffix_tags("file_path", tag_map)
-    assert "path" in infer_col_name_suffix_tags("output_dir", tag_map)
-    assert "id" in infer_col_name_suffix_tags("user_id", tag_map)
-    assert len(infer_col_name_suffix_tags("other_col", tag_map)) == 0
-
-
-def test_infer_col_name_suffix_tags_uppercase():
-    """Test that uppercase suffixes in the mapping work correctly."""
-    tag_map = {("_PATH", "_DIR"): "path", ("_ID",): "id"}
-
-    assert "path" in infer_col_name_suffix_tags("file_path", tag_map)
-    assert "path" in infer_col_name_suffix_tags("output_dir", tag_map)
-    assert "id" in infer_col_name_suffix_tags("user_id", tag_map)
-    assert "path" in infer_col_name_suffix_tags("FILE_PATH", tag_map)
-    assert "path" in infer_col_name_suffix_tags("OUTPUT_DIR", tag_map)
-
-
-def test_infer_col_name_prefix_tags():
-    tag_map = {("is_", "has_"): "bool_like", ("metric_",): "metric"}
-
-    assert "bool_like" in infer_col_name_prefix_tags("is_active", tag_map)
-    assert "bool_like" in infer_col_name_prefix_tags("has_permission", tag_map)
-    assert "metric" in infer_col_name_prefix_tags("metric_loss", tag_map)
-    assert len(infer_col_name_prefix_tags("other_col", tag_map)) == 0
 
 
 def test_df_col_info_update_from_df():

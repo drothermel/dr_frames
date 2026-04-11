@@ -3,10 +3,8 @@ from __future__ import annotations
 import pandas as pd
 
 from dr_frames.filtering import (
-    apply_filters_to_df,
     filter_to_best_metric,
     filter_to_range,
-    filter_to_value,
     filter_to_values,
     make_filter_fxn,
     select_subset,
@@ -32,38 +30,28 @@ def test_select_subset_with_null():
     assert result.iloc[0]["b"] == "y"
 
 
-def test_apply_filters_to_df(sample_df: pd.DataFrame):
-    result = apply_filters_to_df(sample_df, {"category": ["x"]})
+def test_filter_to_values_single_value(sample_df: pd.DataFrame):
+    result = filter_to_values(sample_df, "category", ["x"])
     assert len(result) == 2
 
 
-def test_apply_filters_to_df_multiple_values(sample_df: pd.DataFrame):
-    result = apply_filters_to_df(sample_df, {"name": ["alice", "bob"]})
-    assert len(result) == 2
-
-
-def test_filter_to_value(sample_df: pd.DataFrame):
-    result = filter_to_value(sample_df, "category", "x")
-    assert len(result) == 2
-
-
-def test_filter_to_value_none():
-    df = pd.DataFrame({"a": [1, None, 3]})
-    result = filter_to_value(df, "a", None)
-    assert len(result) == 1
-
-
-def test_filter_to_value_literal_none_string():
-    """Test that literal string 'none' is preserved and not treated as NA."""
-    df = pd.DataFrame({"a": ["none", "something", None]})
-    result = filter_to_value(df, "a", "none")
-    assert len(result) == 1
-    assert result.iloc[0]["a"] == "none"
-
-
-def test_filter_to_values(sample_df: pd.DataFrame):
+def test_filter_to_values_multiple_values(sample_df: pd.DataFrame):
     result = filter_to_values(sample_df, "name", ["alice", "bob"])
     assert len(result) == 2
+
+
+def test_filter_to_values_none():
+    df = pd.DataFrame({"a": [1, None, 3]})
+    result = filter_to_values(df, "a", [None])
+    assert len(result) == 1
+
+
+def test_filter_to_values_literal_none_string_single_value():
+    """Test that literal string 'none' is preserved and not treated as NA."""
+    df = pd.DataFrame({"a": ["none", "something", None]})
+    result = filter_to_values(df, "a", ["none"])
+    assert len(result) == 1
+    assert result.iloc[0]["a"] == "none"
 
 
 def test_filter_to_values_with_none():
@@ -111,7 +99,7 @@ def test_filter_to_best_metric_higher_is_better(metrics_df: pd.DataFrame):
 def test_make_filter_fxn(sample_df: pd.DataFrame):
     filter_fn = make_filter_fxn(
         [
-            (filter_to_value, "category", "x"),
+            (filter_to_values, "category", ["x"]),
             (filter_to_range, "value", 0.5, 1.5),
         ]
     )

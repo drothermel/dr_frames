@@ -5,12 +5,7 @@ from typing import Any
 
 import pandas as pd
 
-from .columns import (
-    apply_skip,
-    contained_cols,
-    move_cols_to_beginning,
-    move_cols_with_prefix_to_end,
-)
+from .columns import move_cols_to_beginning, move_cols_with_prefix_to_end
 
 __all__ = [
     "apply_aggregations",
@@ -19,7 +14,6 @@ __all__ = [
     "unique_by_col",
     "unique_by_cols",
     "get_constant_cols",
-    "fillna_with_defaults",
     "maybe_pipe",
 ]
 
@@ -34,29 +28,20 @@ def unique_by_col(df: pd.DataFrame, col: str) -> list[Any]:
 
 
 def unique_by_cols(df: pd.DataFrame, cols: Sequence[str]) -> dict[str, Any]:
-    contained = contained_cols(df, cols)
+    contained = [col for col in cols if col in df.columns]
     return {col: unique_by_col(df, col) for col in contained}
 
 
 def get_constant_cols(df: pd.DataFrame, skip: Iterable[str] = ()) -> dict[str, Any]:
     if df.empty or len(df) <= 1:
         return {}
+    skip_set = set(skip)
     return {
         c: df[c].iloc[0]
-        for c in apply_skip(df.columns, skip)
+        for c in df.columns
+        if c not in skip_set
         if df[c].nunique(dropna=False) <= 1
     }
-
-
-def fillna_with_defaults(
-    df: pd.DataFrame,
-    defaults: Mapping[str, object] | Iterable[tuple[str, object]],
-) -> pd.DataFrame:
-    defaults_dict = dict(defaults)
-    if not defaults_dict:
-        return df
-    present = {c: value for c, value in defaults_dict.items() if c in df.columns}
-    return df.fillna(value=present) if present else df
 
 
 def maybe_pipe(

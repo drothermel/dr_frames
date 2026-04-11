@@ -13,13 +13,8 @@ from .aggregation import unique_non_null
 __all__ = [
     "ColInfo",
     "DFColInfo",
-    "looks_like_json",
-    "looks_like_path",
     "infer_series_base_tag_type",
     "infer_tags_from_series_sample",
-    "infer_col_name_contains_tags",
-    "infer_col_name_suffix_tags",
-    "infer_col_name_prefix_tags",
 ]
 
 
@@ -39,24 +34,9 @@ class ColInfo(BaseModel):
                 self.catalog.pd_default_type,
             )
         )
-        self.tags.update(
-            infer_col_name_contains_tags(
-                self.name,
-                self.catalog.col_name_contains_map,
-            )
-        )
-        self.tags.update(
-            infer_col_name_suffix_tags(
-                self.name,
-                self.catalog.col_name_suffix_map,
-            )
-        )
-        self.tags.update(
-            infer_col_name_prefix_tags(
-                self.name,
-                self.catalog.col_name_prefix_map,
-            )
-        )
+        self.tags.update(_infer_name_tags(self.name, self.catalog.col_name_contains_map, "contains"))
+        self.tags.update(_infer_name_tags(self.name, self.catalog.col_name_suffix_map, "suffix"))
+        self.tags.update(_infer_name_tags(self.name, self.catalog.col_name_prefix_map, "prefix"))
         self.tags.update(
             infer_tags_from_series_sample(
                 series,
@@ -148,9 +128,9 @@ def infer_tags_from_series_sample(
     path_matches = 0
     json_matches = 0
     for value in sample_vals:
-        if looks_like_path(value, path_like_extensions):
+        if _looks_like_path(value, path_like_extensions):
             path_matches += 1
-        if looks_like_json(value):
+        if _looks_like_json(value):
             json_matches += 1
 
     # Add tags if at least one value matches
@@ -161,42 +141,23 @@ def infer_tags_from_series_sample(
     return tags
 
 
-def infer_col_name_contains_tags(
+def _infer_name_tags(
     name: str,
-    col_name_contains_map: dict[tuple[str, ...], str],
+    pattern_map: dict[tuple[str, ...], str],
+    match_kind: str,
 ) -> set[str]:
     lower_name = name.lower()
     tags: set[str] = set()
-    for contains_tuple, tag in col_name_contains_map.items():
-        for contains in contains_tuple:
-            if contains.lower() in lower_name:
-                tags.add(tag)
-    return tags
-
-
-def infer_col_name_suffix_tags(
-    name: str,
-    col_name_suffix_map: dict[tuple[str, ...], str],
-) -> set[str]:
-    lower_name = name.lower()
-    tags: set[str] = set()
-    for suffix_tuple, tag in col_name_suffix_map.items():
-        for suffix in suffix_tuple:
-            if lower_name.endswith(suffix.lower()):
+    for patterns, tag in pattern_map.items():
+        for pattern in patterns:
+            lowered_pattern = pattern.lower()
+            if match_kind == "contains" and lowered_pattern in lower_name:
                 tags.add(tag)
                 break
-    return tags
-
-
-def infer_col_name_prefix_tags(
-    name: str,
-    col_name_prefix_map: dict[tuple[str, ...], str],
-) -> set[str]:
-    lower_name = name.lower()
-    tags: set[str] = set()
-    for prefix_tuple, tag in col_name_prefix_map.items():
-        for prefix in prefix_tuple:
-            if lower_name.startswith(prefix.lower()):
+            if match_kind == "suffix" and lower_name.endswith(lowered_pattern):
+                tags.add(tag)
+                break
+            if match_kind == "prefix" and lower_name.startswith(lowered_pattern):
                 tags.add(tag)
                 break
     return tags
@@ -218,7 +179,7 @@ def infer_series_base_tag_type(
     return tags
 
 
-def looks_like_path(value: Any, path_extensions: set[str]) -> bool:
+def _looks_like_path(value: Any, path_extensions: set[str]) -> bool:
     if not value or not isinstance(value, str) or value.isspace():
         return False
     normalized = value.strip()
@@ -231,7 +192,7 @@ def looks_like_path(value: Any, path_extensions: set[str]) -> bool:
     return suffix in path_extensions
 
 
-def looks_like_json(value: Any) -> bool:
+def _looks_like_json(value: Any) -> bool:
     if not value or not isinstance(value, str):
         return False
     trimmed = value.strip()
