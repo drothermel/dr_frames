@@ -35,6 +35,8 @@ def metrics_df() -> pd.DataFrame:
         {
             "config_a": ["a", "a", "b", "b"],
             "config_b": [1, 1, 2, 2],
+            "seed": [1, 2, 1, 2],
+            "dataset": ["c4", "c4", "pile", "pile"],
             "eval/loss": [0.5, 0.6, 0.7, 0.8],
             "eval/accuracy": [0.9, 0.85, 0.8, 0.75],
         }

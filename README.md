@@ -2,15 +2,24 @@
 
 Pandas/DataFrame utilities for data manipulation, filtering, aggregation, and schema management.
 
+Primitive quick reference for agents:
+- `primitives.columns`: `rename_columns`, `move_cols_to_beginning`, `strip_col_prefixes`, `drop_all_null_cols`, `drop_all_constant_cols`, `get_cols_by_prefix`, `get_cols_by_contains`, `move_cols_with_prefix_to_end`, `move_numeric_cols_to_end`
+- `primitives.filtering`: `select_subset`, `filter_to_values`, `filter_to_range`, `make_filter_fxn`
+- `primitives.ranking`: `select_best_by_metric`
+- `primitives.coerce`: `coerce_numeric_cols`, `coerce_string_cols`
+- `primitives.aggregation`: `aggregate_over_seeds`, `aggregate_by_group`
+- `primitives.missing`: `fill_missing_values`
+- `primitives.masked`: `masked_getter`, `masked_setter`
+- `primitives.constant`: `get_constant_cols`, `get_groupwise_constant_cols`
+- `primitives.unique`: `unique_non_null`, `unique_by_col`, `unique_by_cols`
+- `primitives.namespaced`: `group_namespaced_values`
+- `primitives.pipeline`: `maybe_pipe`
+- `primitives.parsing`: `parse_list_string`
+
 ## Installation
 
 ```bash
-pip install dr-frames
-```
-
-For table formatting features (console, markdown, latex):
-```bash
-pip install dr-frames[formatting]
+uv add dr-frames
 ```
 
 ## Quick Start
@@ -37,141 +46,51 @@ result = (
 )
 ```
 
-## Module Overview
+## Flexible Schema
 
-| Module | Purpose | Key Functions |
-|--------|---------|---------------|
-| **columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
-| **filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
-| **cells** | Cell-level operations | `ensure_column`, `map_column_with_fallback`, `force_set_cell` |
-| **types** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
-| **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `apply_aggregations`, `unique_non_null` |
-| **parsing** | String list parsing | `parse_first_element`, `sum_list_elements`, `is_homogeneous` |
-| **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
-| **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `looks_like_json` |
-| **formatting** | Table output | `format_table`, `format_coverage_table` |
+`flexible_schema` is the higher-level part of the library for working with
+dataframes whose columns you did not design yourself.
 
-## Documentation
+- `DataField` describes a logical field and can resolve which dataframe column
+  it maps to.
+- `ComputedField` describes a derived field that should be added from existing
+  columns before downstream use.
+- `MetricDataField` describes metric columns, especially prefixed metric names
+  such as `eval/...`.
+- `DataFormat` is the container that ties those pieces together and gives you a
+  reusable view of a dataframe schema.
 
-- [Full API Reference](docs/api.md)
-- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [cells](docs/cells.md) | [types](docs/types.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md) | [formatting](docs/formatting.md)
-- [Recipes & Patterns](docs/recipes.md)
+Typical usage:
+- build a `DataFormat` from a dataframe with `DataFormat.from_df(...)` or from
+  a field-description mapping with `DataFormat.from_dict(...)`
+- inspect unresolved fields and discovered metrics
+- add computed fields for columns you want to derive once and reuse
+- call `prepare_for_plotting(...)` to produce a dataframe restricted to the
+  known fields, computed fields, and metrics
+- use `metric_col(...)`, `get_metric(...)`, and `get_config_columns(...)` to
+  drive plotting or grouped analysis code without hardcoding raw column names
 
-### Auto-generated API Docs
+Minimal example:
 
-```bash
-# Serve interactive docs locally
-uv run pdoc dr_frames
-
-# Generate static HTML
-uv run pdoc dr_frames -o docs/api_html
-```
-
-## Quick Reference
-
-### Column Operations
 ```python
-from dr_frames import (
-    contained_cols,          # cols that exist in df
-    remaining_cols,          # cols NOT in a list
-    get_cols_by_prefix,      # cols starting with prefix
-    get_cols_by_contains,    # cols containing substring
-    move_cols_to_beginning,  # reorder cols
-    move_cols_with_prefix_to_end,
-    strip_col_prefixes,      # rename by removing prefix
-    drop_all_null_cols,      # remove empty columns
-)
-```
+from dr_frames import ComputedField, DataField, DataFormat
 
-### Filtering
-```python
-from dr_frames import (
-    select_subset,           # filter by exact column values
-    apply_filters_to_df,     # filter by value lists
-    filter_to_value,         # single value filter
-    filter_to_values,        # multi-value filter
-    filter_to_range,         # numeric range filter
-    filter_to_best_metric,   # keep best per group
-    make_filter_fxn,         # compose filters
+fmt = DataFormat(
+    fields=[
+        DataField(id_string="model", column_name="model_name"),
+        DataField(id_string="dataset"),
+    ],
+    computed_fields=[
+        ComputedField(
+            id_string="is_large",
+            source_columns=["params_millions"],
+            compute=lambda df: df["params_millions"] > 1000,
+        )
+    ],
 )
-```
 
-### Cell Operations
-```python
-from dr_frames import (
-    ensure_column,           # add column if missing
-    fill_missing_values,     # fillna with defaults dict
-    rename_columns,          # safe rename (skips missing)
-    map_column_with_fallback,# map values, keep unmapped
-    apply_column_converters, # apply functions to columns
-    maybe_update_cell,       # update if currently null
-    force_set_cell,          # always update
-    masked_getter,           # get value where mask is true
-    masked_setter,           # set value where mask is true
-)
-```
-
-### Type Coercion
-```python
-from dr_frames import (
-    coerce_numeric_cols,     # convert to float/int
-    coerce_string_cols,      # convert to string dtype
-    is_string_series,        # check if series is strings
-)
-```
-
-### Aggregation
-```python
-from dr_frames import (
-    aggregate_over_seeds,    # mean/std/count by config
-    apply_aggregations,      # flexible groupby
-    unique_non_null,         # unique values excluding null
-    unique_by_col,           # unique values in column
-    get_constant_cols,       # cols with single value
-    fillna_with_defaults,    # fill nulls from dict
-    maybe_pipe,              # conditional pipe
-)
-```
-
-### Parsing
-```python
-from dr_frames import (
-    parse_list_string,       # "[1,2,3]" -> [1,2,3]
-    parse_first_element,     # "[1,2,3]" -> 1.0
-    sum_list_elements,       # "[1,2,3]" -> 6.0
-    is_homogeneous,          # "[1,1,1]" -> True
-)
-```
-
-### Schema
-```python
-from dr_frames import (
-    DataField,               # field with metadata
-    ComputedField,           # derived field
-    MetricDataField,         # metric with group info
-    DataFormat,              # container for fields
-)
-```
-
-### Profiling
-```python
-from dr_frames import (
-    DFColInfo,               # catalog of column info
-    ColInfo,                 # single column metadata
-    looks_like_json,         # detect JSON strings
-    looks_like_path,         # detect file paths
-    infer_series_base_tag_type,  # infer dtype tags
-)
-```
-
-### Formatting (requires `[formatting]` extra)
-```python
-from dr_frames import (
-    format_table,            # render table in multiple formats
-    format_coverage_table,   # show column coverage stats
-    FORMATTER_TYPES,         # available formatters
-    OUTPUT_FORMATS,          # available output formats
-)
+plot_df = fmt.prepare_for_plotting(df)
+config_cols = fmt.get_config_columns()
 ```
 
 ## License

@@ -1,15 +1,8 @@
 from __future__ import annotations
 
-import math
-
 import pandas as pd
 
-from dr_frames.parsing import (
-    is_homogeneous,
-    parse_first_element,
-    parse_list_string,
-    sum_list_elements,
-)
+from dr_frames.primitives.parsing import parse_list_string
 
 
 def test_parse_list_string():
@@ -30,61 +23,23 @@ def test_parse_list_string_null():
     assert parse_list_string(pd.NA) is None
 
 
-def test_parse_first_element():
-    assert parse_first_element("[0.5, 0.25]") == 0.5
-    assert parse_first_element("[1, 2, 3]") == 1.0
+def test_parse_list_string_non_scalar_input():
+    assert parse_list_string([1, 2, 3]) is None
 
 
-def test_parse_first_element_single():
-    assert parse_first_element("42") == 42.0
+def test_parse_list_string_empty_list():
+    assert parse_list_string("[]") == []
 
 
-def test_parse_first_element_empty_list():
-    assert math.isnan(parse_first_element("[]"))
+def test_parse_list_string_supports_consumer_projections():
+    values = parse_list_string("[1, 2, 3]")
+    assert values is not None
+    assert float(values[0]) == 1.0
+    assert float(sum(float(item) for item in values)) == 6.0
+    assert len(set(values)) == 3
 
 
-def test_parse_first_element_null():
-    assert math.isnan(parse_first_element(pd.NA))
-
-
-def test_parse_first_element_invalid():
-    assert math.isnan(parse_first_element("invalid"))
-
-
-def test_sum_list_elements():
-    assert sum_list_elements("[1, 2, 3]") == 6.0
-    assert sum_list_elements("[4, 8]") == 12.0
-
-
-def test_sum_list_elements_single():
-    assert sum_list_elements("10") == 10.0
-
-
-def test_sum_list_elements_empty():
-    assert math.isnan(sum_list_elements("[]"))
-
-
-def test_sum_list_elements_null():
-    assert math.isnan(sum_list_elements(pd.NA))
-
-
-def test_is_homogeneous():
-    assert is_homogeneous("[0.125, 0.125, 0.125]") is True
-    assert is_homogeneous("[1, 1, 1]") is True
-
-
-def test_is_homogeneous_heterogeneous():
-    assert is_homogeneous("[0.5, 0.25]") is False
-    assert is_homogeneous("[1, 2, 3]") is False
-
-
-def test_is_homogeneous_single():
-    assert is_homogeneous("42") is True
-
-
-def test_is_homogeneous_empty():
-    assert is_homogeneous("[]") is False
-
-
-def test_is_homogeneous_null():
-    assert is_homogeneous(pd.NA) is False
+def test_parse_list_string_supports_consumer_homogeneity_check():
+    values = parse_list_string("[0.125, 0.125, 0.125]")
+    assert values is not None
+    assert len(set(values)) == 1
