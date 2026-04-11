@@ -37,13 +37,7 @@ from .primitives.filtering import (
 from .primitives.ranking import select_best_by_metric
 from .primitives.parsing import parse_list_string
 from .primitives.pipeline import maybe_pipe
-from .profiling import (
-    ColInfo,
-    DFColInfo,
-    infer_series_base_tag_type,
-    infer_tags_from_series_sample,
-)
-from .schema import (
+from .flexible_schema import (
     ComputedField,
     DataField,
     DataFormat,
@@ -56,11 +50,9 @@ __all__ = [
     "aggregate_by_group",
     "coerce_numeric_cols",
     "coerce_string_cols",
-    "ColInfo",
     "ComputedField",
     "DataField",
     "DataFormat",
-    "DFColInfo",
     "drop_all_constant_cols",
     "drop_all_null_cols",
     "fill_missing_values",
@@ -71,8 +63,6 @@ __all__ = [
     "get_constant_cols",
     "get_groupwise_constant_cols",
     "group_namespaced_values",
-    "infer_series_base_tag_type",
-    "infer_tags_from_series_sample",
     "make_filter_fxn",
     "masked_getter",
     "masked_setter",

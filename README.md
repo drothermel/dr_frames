@@ -59,13 +59,12 @@ result = (
 | **primitives.namespaced** | Namespace-aware value grouping | `group_namespaced_values` |
 | **primitives.pipeline** | Pipe-friendly orchestration | `maybe_pipe` |
 | **primitives.parsing** | String list parsing | `parse_list_string` |
-| **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
-| **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `infer_tags_from_series_sample` |
+| **flexible_schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
 
 ## Documentation
 
 - [Full API Reference](docs/api.md)
-- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [coerce](docs/coerce.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md)
+- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [coerce](docs/coerce.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md)
 - [Recipes & Patterns](docs/recipes.md)
 
 ### Auto-generated API Docs
@@ -186,16 +185,6 @@ from dr_frames import (
     ComputedField,           # derived field
     MetricDataField,         # metric with group info
     DataFormat,              # container for fields
-)
-```
-
-### Profiling
-```python
-from dr_frames import (
-    DFColInfo,               # catalog of column info
-    ColInfo,                 # single column metadata
-    infer_series_base_tag_type,  # infer dtype tags
-    infer_tags_from_series_sample,  # sample-based path/json tags
 )
 ```
 
