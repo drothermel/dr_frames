@@ -60,7 +60,7 @@ result = (
 | **primitives.constant** | Constant-value inspection | `get_constant_cols`, `get_groupwise_constant_cols` |
 | **primitives.namespaced** | Namespace-aware value grouping | `group_namespaced_values` |
 | **primitives.pipeline** | Pipe-friendly orchestration | `maybe_pipe` |
-| **parsing** | String list parsing | `parse_list_string` |
+| **primitives.parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
 | **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `infer_tags_from_series_sample` |
 | **formatting** | Table output | `format_table`, `format_coverage_table` |

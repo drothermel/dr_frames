@@ -33,7 +33,7 @@ from .filtering import (
     make_filter_fxn,
     select_subset,
 )
-from .parsing import parse_list_string
+from .primitives.parsing import parse_list_string
 from .primitives.pipeline import maybe_pipe
 from .profiling import (
     ColInfo,

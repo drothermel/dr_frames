@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from dr_frames.parsing import parse_list_string
+from dr_frames.primitives.parsing import parse_list_string
 
 
 def test_parse_list_string():
