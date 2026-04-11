@@ -5,6 +5,7 @@ Pandas/DataFrame utilities for data manipulation, filtering, aggregation, and sc
 Common entry points:
 - `maybe_pipe` for conditional `df.pipe(...)` steps
 - `select_subset`, `filter_to_values`, and `filter_to_range` for filtering
+- `select_best_by_metric` for best-row-per-group selection
 - `coerce_numeric_cols` and `coerce_string_cols` for dtype cleanup
 - `aggregate_over_seeds` and `aggregate_by_group` for grouped reductions
 - `unique_non_null`, `unique_by_col`, and `unique_by_cols` for unique-value inspection
@@ -52,7 +53,8 @@ result = (
 | Module | Purpose | Key Functions |
 |--------|---------|---------------|
 | **columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
-| **filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
+| **primitives.filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
+| **primitives.ranking** | Groupwise row selection | `select_best_by_metric` |
 | **cells** | Targeted dataframe edits | `fill_missing_values`, `rename_columns`, `masked_setter` |
 | **primitives.coerce** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
 | **primitives.aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group` |
@@ -101,8 +103,8 @@ from dr_frames import (
     select_subset,           # filter by exact column values
     filter_to_values,        # multi-value filter
     filter_to_range,         # numeric range filter
-    filter_to_best_metric,   # keep best per group
     make_filter_fxn,         # compose filters
+    select_best_by_metric,   # keep best per group
 )
 ```
 

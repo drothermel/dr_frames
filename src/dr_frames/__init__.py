@@ -26,13 +26,13 @@ from .primitives.coerce import (
     coerce_numeric_cols,
     coerce_string_cols,
 )
-from .filtering import (
-    filter_to_best_metric,
+from .primitives.filtering import (
     filter_to_range,
     filter_to_values,
     make_filter_fxn,
     select_subset,
 )
+from .primitives.ranking import select_best_by_metric
 from .primitives.parsing import parse_list_string
 from .primitives.pipeline import maybe_pipe
 from .profiling import (
@@ -73,7 +73,6 @@ __all__ = [
     "DFColInfo",
     "drop_all_null_cols",
     "fill_missing_values",
-    "filter_to_best_metric",
     "filter_to_range",
     "filter_to_values",
     "get_cols_by_contains",
@@ -88,6 +87,7 @@ __all__ = [
     "masked_setter",
     "maybe_pipe",
     "MetricDataField",
+    "select_best_by_metric",
     "move_cols_to_beginning",
     "move_cols_with_prefix_to_end",
     "move_numeric_cols_to_end",

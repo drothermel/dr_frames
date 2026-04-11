@@ -9,7 +9,6 @@ __all__ = [
     "select_subset",
     "filter_to_values",
     "filter_to_range",
-    "filter_to_best_metric",
     "make_filter_fxn",
 ]
 
@@ -47,19 +46,6 @@ def filter_to_range(
     df: pd.DataFrame, column: str, min_val: float, max_val: float
 ) -> pd.DataFrame:
     return df[(df[column] >= min_val) & (df[column] <= max_val)].copy()
-
-
-def filter_to_best_metric(
-    df: pd.DataFrame,
-    group_cols: list[str],
-    metric_col: str,
-    lower_is_better: bool = True,
-) -> pd.DataFrame:
-    if lower_is_better:
-        idx = df.groupby(group_cols)[metric_col].idxmin()
-    else:
-        idx = df.groupby(group_cols)[metric_col].idxmax()
-    return df.loc[idx].copy()
 
 
 def make_filter_fxn(

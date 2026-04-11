@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import pandas as pd
 
-from dr_frames.filtering import (
-    filter_to_best_metric,
+from dr_frames.primitives.filtering import (
     filter_to_range,
     filter_to_values,
     make_filter_fxn,
     select_subset,
 )
+from dr_frames.primitives.ranking import select_best_by_metric
 
 
 def test_select_subset(sample_df: pd.DataFrame):
@@ -74,8 +74,8 @@ def test_filter_to_range(sample_df: pd.DataFrame):
     assert result.iloc[0]["value"] == 2.0
 
 
-def test_filter_to_best_metric(metrics_df: pd.DataFrame):
-    result = filter_to_best_metric(
+def test_select_best_by_metric(metrics_df: pd.DataFrame):
+    result = select_best_by_metric(
         metrics_df,
         group_cols=["config_a"],
         metric_col="eval/loss",
@@ -85,8 +85,8 @@ def test_filter_to_best_metric(metrics_df: pd.DataFrame):
     assert result[result["config_a"] == "a"]["eval/loss"].iloc[0] == 0.5
 
 
-def test_filter_to_best_metric_higher_is_better(metrics_df: pd.DataFrame):
-    result = filter_to_best_metric(
+def test_select_best_by_metric_higher_is_better(metrics_df: pd.DataFrame):
+    result = select_best_by_metric(
         metrics_df,
         group_cols=["config_a"],
         metric_col="eval/accuracy",
