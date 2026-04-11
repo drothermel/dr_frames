@@ -1,34 +1,13 @@
 from __future__ import annotations
 
 import pandas as pd
-import pytest
 
 from dr_frames.cells import (
-    apply_column_converters,
-    apply_if_column,
-    ensure_column,
     fill_missing_values,
-    force_set_cell,
-    map_column_with_fallback,
     masked_getter,
     masked_setter,
-    maybe_update_cell,
     rename_columns,
-    require_row_index,
 )
-
-
-def test_ensure_column_new():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = ensure_column(df, "b", 0)
-    assert "b" in result.columns
-    assert list(result["b"]) == [0, 0, 0]
-
-
-def test_ensure_column_existing_fillna():
-    df = pd.DataFrame({"a": [1, None, 3]})
-    result = ensure_column(df, "a", 0)
-    assert list(result["a"]) == [1.0, 0.0, 3.0]
 
 
 def test_fill_missing_values():
@@ -44,77 +23,6 @@ def test_rename_columns():
     assert "x" in result.columns
     assert "a" not in result.columns
     assert "b" in result.columns
-
-
-def test_map_column_with_fallback():
-    df = pd.DataFrame({"a": ["x", "y", "z"]})
-    result = map_column_with_fallback(df, "a", {"x": "X", "y": "Y"})
-    assert list(result["a"]) == ["X", "Y", "z"]
-
-
-def test_map_column_with_fallback_missing_column():
-    df = pd.DataFrame({"a": [1, 2]})
-    result = map_column_with_fallback(df, "b", {"x": "X"})
-    assert "a" in result.columns
-
-
-def test_apply_column_converters():
-    df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"]})
-    result = apply_column_converters(df, {"a": lambda x: x * 2, "b": str.upper})
-    assert list(result["a"]) == [2, 4, 6]
-    assert list(result["b"]) == ["X", "Y", "Z"]
-
-
-def test_maybe_update_cell():
-    df = pd.DataFrame({"a": [1, None, 3]})
-    result = maybe_update_cell(df, 1, "a", 999)
-    assert result.loc[1, "a"] == 999
-    result2 = maybe_update_cell(df, 0, "a", 888)
-    assert result2.loc[0, "a"] == 1
-
-
-def test_force_set_cell():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = force_set_cell(df, 1, "a", 999)
-    assert result.loc[1, "a"] == 999
-
-
-def test_force_set_cell_new_column():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = force_set_cell(df, 1, "b", 999, default=0)
-    assert "b" in result.columns
-    assert result.loc[1, "b"] == 999
-
-
-def test_apply_if_column():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = apply_if_column(df, "a", lambda s: s * 2)
-    assert list(result["a"]) == [2, 4, 6]
-
-
-def test_apply_if_column_missing():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = apply_if_column(df, "b", lambda s: s * 2)
-    assert "a" in result.columns
-    assert "b" not in result.columns
-
-
-def test_require_row_index():
-    df = pd.DataFrame({"a": ["x", "y", "z"]})
-    idx = require_row_index(df, "a", "y")
-    assert idx == 1
-
-
-def test_require_row_index_not_found():
-    df = pd.DataFrame({"a": ["x", "y", "z"]})
-    with pytest.raises(ValueError):
-        require_row_index(df, "a", "w")
-
-
-def test_require_row_index_multiple():
-    df = pd.DataFrame({"a": ["x", "x", "z"]})
-    with pytest.raises(ValueError):
-        require_row_index(df, "a", "x")
 
 
 def test_masked_getter():
@@ -149,4 +57,3 @@ def test_masked_setter_inplace():
     # Verify original DataFrame is mutated when inplace=True
     assert df.loc[1, "b"] == "NEW"
     assert result is df
-

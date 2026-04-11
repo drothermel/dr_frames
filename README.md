@@ -53,7 +53,7 @@ result = (
 |--------|---------|---------------|
 | **columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
 | **filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
-| **cells** | Cell-level operations | `ensure_column`, `map_column_with_fallback`, `force_set_cell` |
+| **cells** | Targeted dataframe edits | `fill_missing_values`, `rename_columns`, `masked_setter` |
 | **types** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
 | **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group` |
 | **unique** | Unique-value inspection | `unique_non_null`, `unique_by_col`, `unique_by_cols` |
@@ -109,13 +109,8 @@ from dr_frames import (
 ### Cell Operations
 ```python
 from dr_frames import (
-    ensure_column,           # add column if missing
     fill_missing_values,     # fillna with defaults dict
     rename_columns,          # safe rename (skips missing)
-    map_column_with_fallback,# map values, keep unmapped
-    apply_column_converters, # apply functions to columns
-    maybe_update_cell,       # update if currently null
-    force_set_cell,          # always update
     masked_getter,           # get value where mask is true
     masked_setter,           # set value where mask is true
 )
