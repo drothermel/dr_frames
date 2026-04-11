@@ -4,11 +4,12 @@ from .primitives.aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
 )
-from .cells import (
-    fill_missing_values,
+from .primitives.masked import (
     masked_getter,
     masked_setter,
-    rename_columns,
+)
+from .primitives.missing import (
+    fill_missing_values,
 )
 from .primitives.namespaced import group_namespaced_values
 from .primitives.columns import (
@@ -19,6 +20,7 @@ from .primitives.columns import (
     move_cols_to_beginning,
     move_cols_with_prefix_to_end,
     move_numeric_cols_to_end,
+    rename_columns,
     strip_col_prefixes,
 )
 from .primitives.constant import get_constant_cols, get_groupwise_constant_cols

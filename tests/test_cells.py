@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pandas as pd
 
-from dr_frames.cells import (
-    fill_missing_values,
+from dr_frames.primitives.columns import rename_columns
+from dr_frames.primitives.masked import (
     masked_getter,
     masked_setter,
-    rename_columns,
 )
+from dr_frames.primitives.missing import fill_missing_values
 
 
 def test_fill_missing_values():

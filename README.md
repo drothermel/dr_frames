@@ -47,10 +47,11 @@ result = (
 
 | Module | Purpose | Key Functions |
 |--------|---------|---------------|
-| **primitives.columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
+| **primitives.columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes`, `rename_columns` |
 | **primitives.filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
 | **primitives.ranking** | Groupwise row selection | `select_best_by_metric` |
-| **cells** | Targeted dataframe edits | `fill_missing_values`, `rename_columns`, `masked_setter` |
+| **primitives.missing** | Missing-value filling | `fill_missing_values` |
+| **primitives.masked** | Mask-based access and updates | `masked_getter`, `masked_setter` |
 | **primitives.coerce** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
 | **primitives.aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group` |
 | **primitives.unique** | Unique-value inspection | `unique_non_null`, `unique_by_col`, `unique_by_cols` |
@@ -64,7 +65,7 @@ result = (
 ## Documentation
 
 - [Full API Reference](docs/api.md)
-- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [cells](docs/cells.md) | [coerce](docs/coerce.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md)
+- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [coerce](docs/coerce.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md)
 - [Recipes & Patterns](docs/recipes.md)
 
 ### Auto-generated API Docs
@@ -102,11 +103,23 @@ from dr_frames import (
 )
 ```
 
-### Cell Operations
+### Missing Values
 ```python
 from dr_frames import (
     fill_missing_values,     # fillna with defaults dict
+)
+```
+
+### Column Renaming
+```python
+from dr_frames import (
     rename_columns,          # safe rename (skips missing)
+)
+```
+
+### Masked Access
+```python
+from dr_frames import (
     masked_getter,           # get value where mask is true
     masked_setter,           # set value where mask is true
 )

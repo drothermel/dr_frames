@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from typing import Literal
 
 import pandas as pd
@@ -10,6 +10,7 @@ from .constant import get_constant_cols
 __all__ = [
     "get_cols_by_prefix",
     "get_cols_by_contains",
+    "rename_columns",
     "strip_col_prefixes",
     "move_cols_to_beginning",
     "move_numeric_cols_to_end",
@@ -51,6 +52,19 @@ def strip_col_prefixes(
     return df.rename(
         columns={c: c.removeprefix(prefix) for c in get_cols_by_prefix(df, prefix, skip)}
     )
+
+
+def rename_columns(
+    df: pd.DataFrame,
+    mapping: Mapping[str, str],
+    *,
+    inplace: bool = False,
+) -> pd.DataFrame:
+    target = df if inplace else df.copy()
+    existing_map = {old: new for old, new in mapping.items() if old in target.columns}
+    if existing_map:
+        target = target.rename(columns=existing_map)
+    return target
 
 
 def move_cols_to_beginning(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
