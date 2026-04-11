@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .aggregation import (
+from .primitives.aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
 )
@@ -10,7 +10,7 @@ from .cells import (
     masked_setter,
     rename_columns,
 )
-from .namespaced import group_namespaced_values
+from .primitives.namespaced import group_namespaced_values
 from .columns import (
     drop_all_null_cols,
     get_cols_by_contains,
@@ -21,8 +21,8 @@ from .columns import (
     strip_col_prefixes,
     strip_col_prefixes_batch,
 )
-from .constant import get_constant_cols, get_groupwise_constant_cols
-from .coerce import (
+from .primitives.constant import get_constant_cols, get_groupwise_constant_cols
+from .primitives.coerce import (
     coerce_numeric_cols,
     coerce_string_cols,
 )
@@ -34,7 +34,7 @@ from .filtering import (
     select_subset,
 )
 from .parsing import parse_list_string
-from .pipeline import maybe_pipe
+from .primitives.pipeline import maybe_pipe
 from .profiling import (
     ColInfo,
     DFColInfo,
@@ -47,7 +47,7 @@ from .schema import (
     DataFormat,
     MetricDataField,
 )
-from .unique import unique_by_col, unique_by_cols, unique_non_null
+from .primitives.unique import unique_by_col, unique_by_cols, unique_non_null
 
 try:
     from .formatting import (  # noqa: F401

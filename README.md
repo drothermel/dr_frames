@@ -54,12 +54,12 @@ result = (
 | **columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
 | **filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
 | **cells** | Targeted dataframe edits | `fill_missing_values`, `rename_columns`, `masked_setter` |
-| **coerce** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
-| **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group` |
-| **unique** | Unique-value inspection | `unique_non_null`, `unique_by_col`, `unique_by_cols` |
-| **constant** | Constant-value inspection | `get_constant_cols`, `get_groupwise_constant_cols` |
-| **namespaced** | Namespace-aware value grouping | `group_namespaced_values` |
-| **pipeline** | Pipe-friendly orchestration | `maybe_pipe` |
+| **primitives.coerce** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
+| **primitives.aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group` |
+| **primitives.unique** | Unique-value inspection | `unique_non_null`, `unique_by_col`, `unique_by_cols` |
+| **primitives.constant** | Constant-value inspection | `get_constant_cols`, `get_groupwise_constant_cols` |
+| **primitives.namespaced** | Namespace-aware value grouping | `group_namespaced_values` |
+| **primitives.pipeline** | Pipe-friendly orchestration | `maybe_pipe` |
 | **parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
 | **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `infer_tags_from_series_sample` |
@@ -68,7 +68,7 @@ result = (
 ## Documentation
 
 - [Full API Reference](docs/api.md)
-- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [cells](docs/cells.md) | [types](docs/types.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md) | [formatting](docs/formatting.md)
+- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [cells](docs/cells.md) | [coerce](docs/coerce.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md) | [formatting](docs/formatting.md)
 - [Recipes & Patterns](docs/recipes.md)
 
 ### Auto-generated API Docs

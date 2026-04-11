@@ -33,7 +33,9 @@ def get_groupwise_constant_cols(
         raise ValueError("At least one grouping column must be present in the dataframe.")
 
     valid_candidate_cols = [
-        column for column in candidate_cols if column in df.columns and column not in valid_group_cols
+        column
+        for column in candidate_cols
+        if column in df.columns and column not in valid_group_cols
     ]
     if not valid_candidate_cols:
         return []

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from dr_frames.aggregation import (
+from dr_frames.primitives.aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
 )

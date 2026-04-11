@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from dr_frames import maybe_pipe
-from dr_frames.pipeline import maybe_pipe as maybe_pipe_from_module
+from dr_frames.primitives.pipeline import maybe_pipe as maybe_pipe_from_module
 
 
 def test_maybe_pipe_true():

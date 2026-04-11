@@ -3,7 +3,9 @@ from __future__ import annotations
 import pandas as pd
 
 from dr_frames import group_namespaced_values
-from dr_frames.namespaced import group_namespaced_values as group_namespaced_values_from_module
+from dr_frames.primitives.namespaced import (
+    group_namespaced_values as group_namespaced_values_from_module,
+)
 
 
 def test_group_namespaced_values():

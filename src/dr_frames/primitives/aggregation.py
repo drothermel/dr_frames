@@ -4,7 +4,7 @@ from collections.abc import Sequence
 
 import pandas as pd
 
-from .columns import move_cols_to_beginning, move_cols_with_prefix_to_end
+from ..columns import move_cols_to_beginning, move_cols_with_prefix_to_end
 from .constant import get_groupwise_constant_cols
 
 __all__ = [

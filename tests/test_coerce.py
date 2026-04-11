@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from dr_frames.coerce import coerce_numeric_cols, coerce_string_cols
+from dr_frames.primitives.coerce import coerce_numeric_cols, coerce_string_cols
 
 
 def test_coerce_numeric_cols():
