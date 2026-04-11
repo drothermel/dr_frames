@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from .aggregation import (
     aggregate_over_seeds,
-    apply_aggregations,
+    aggregate_by_group,
     get_constant_cols,
     maybe_pipe,
     unique_by_col,
@@ -73,7 +73,7 @@ except ImportError:
 
 __all__ = [
     "aggregate_over_seeds",
-    "apply_aggregations",
+    "aggregate_by_group",
     "apply_column_converters",
     "apply_if_column",
     "coerce_numeric_cols",

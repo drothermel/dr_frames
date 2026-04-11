@@ -45,7 +45,7 @@ result = (
 | **filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
 | **cells** | Cell-level operations | `ensure_column`, `map_column_with_fallback`, `force_set_cell` |
 | **types** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
-| **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `apply_aggregations`, `unique_non_null` |
+| **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group`, `unique_non_null` |
 | **parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
 | **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `infer_tags_from_series_sample` |
@@ -120,7 +120,7 @@ from dr_frames import (
 ```python
 from dr_frames import (
     aggregate_over_seeds,    # mean/std/count by config
-    apply_aggregations,      # flexible groupby
+    aggregate_by_group,      # generic grouped aggregation
     unique_non_null,         # unique values excluding null
     unique_by_col,           # unique values in column
     get_constant_cols,       # cols with single value
