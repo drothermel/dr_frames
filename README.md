@@ -52,7 +52,7 @@ result = (
 
 | Module | Purpose | Key Functions |
 |--------|---------|---------------|
-| **columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
+| **primitives.columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
 | **primitives.filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
 | **primitives.ranking** | Groupwise row selection | `select_best_by_metric` |
 | **cells** | Targeted dataframe edits | `fill_missing_values`, `rename_columns`, `masked_setter` |

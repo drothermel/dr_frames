@@ -11,7 +11,8 @@ from .cells import (
     rename_columns,
 )
 from .primitives.namespaced import group_namespaced_values
-from .columns import (
+from .primitives.columns import (
+    drop_all_constant_cols,
     drop_all_null_cols,
     get_cols_by_contains,
     get_cols_by_prefix,
@@ -19,7 +20,6 @@ from .columns import (
     move_cols_with_prefix_to_end,
     move_numeric_cols_to_end,
     strip_col_prefixes,
-    strip_col_prefixes_batch,
 )
 from .primitives.constant import get_constant_cols, get_groupwise_constant_cols
 from .primitives.coerce import (
@@ -71,6 +71,7 @@ __all__ = [
     "DataField",
     "DataFormat",
     "DFColInfo",
+    "drop_all_constant_cols",
     "drop_all_null_cols",
     "fill_missing_values",
     "filter_to_range",
@@ -95,7 +96,6 @@ __all__ = [
     "rename_columns",
     "select_subset",
     "strip_col_prefixes",
-    "strip_col_prefixes_batch",
     "unique_by_col",
     "unique_by_cols",
     "unique_non_null",
