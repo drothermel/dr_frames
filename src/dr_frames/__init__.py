@@ -3,9 +3,6 @@ from __future__ import annotations
 from .aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
-    unique_by_col,
-    unique_by_cols,
-    unique_non_null,
 )
 from .cells import (
     apply_column_converters,
@@ -58,6 +55,7 @@ from .types import (
     coerce_string_cols,
     is_string_series,
 )
+from .unique import unique_by_col, unique_by_cols, unique_non_null
 
 try:
     from .formatting import (  # noqa: F401

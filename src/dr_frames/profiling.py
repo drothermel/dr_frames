@@ -8,7 +8,7 @@ from typing import Any
 import pandas as pd
 from pydantic import BaseModel, Field
 
-from .aggregation import unique_non_null
+from .unique import unique_non_null
 
 __all__ = [
     "ColInfo",

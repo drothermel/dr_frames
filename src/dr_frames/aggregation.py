@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
-from typing import Any
+from collections.abc import Sequence
 
 import pandas as pd
 
@@ -11,24 +10,7 @@ from .constant import get_groupwise_constant_cols
 __all__ = [
     "aggregate_by_group",
     "aggregate_over_seeds",
-    "unique_non_null",
-    "unique_by_col",
-    "unique_by_cols",
 ]
-
-
-def unique_non_null(values: pd.Series | Iterable[Any]) -> list[Any]:
-    series = values if isinstance(values, pd.Series) else pd.Series(list(values))
-    return series.dropna().unique().tolist()
-
-
-def unique_by_col(df: pd.DataFrame, col: str) -> list[Any]:
-    return df[col].unique().tolist()
-
-
-def unique_by_cols(df: pd.DataFrame, cols: Sequence[str]) -> dict[str, Any]:
-    contained = [col for col in cols if col in df.columns]
-    return {col: unique_by_col(df, col) for col in contained}
 
 
 def _validate_group_columns(df: pd.DataFrame, group_cols: Sequence[str]) -> list[str]:
