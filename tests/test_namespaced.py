@@ -24,5 +24,26 @@ def test_group_namespaced_values_empty_map():
     assert list(result) == ["apple", "banana"]
 
 
+def test_group_namespaced_values_prefers_longest_prefix_and_tuple_input():
+    df = pd.DataFrame({"name": ["model/base/run", "model/run"]})
+    result = group_namespaced_values(
+        df,
+        "name",
+        [("model/", "generic"), ("model/base/", "base")],
+        output_col="group",
+    )
+    assert list(result) == ["base", "generic"]
+
+
+def test_group_namespaced_values_raises_for_invalid_prefix_items():
+    df = pd.DataFrame({"name": ["apple"]})
+    try:
+        group_namespaced_values(df, "name", [(1, "fruit")], output_col="group")
+    except AssertionError as exc:
+        assert "Prefix keys must be strings" in str(exc)
+    else:
+        raise AssertionError("Expected AssertionError")
+
+
 def test_group_namespaced_values_module_export_matches_top_level():
     assert group_namespaced_values_from_module is group_namespaced_values

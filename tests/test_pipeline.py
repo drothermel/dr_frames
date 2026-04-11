@@ -24,5 +24,13 @@ def test_maybe_pipe_callable():
     assert "b" in result.columns
 
 
+def test_maybe_pipe_iterable_truthiness():
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    result = maybe_pipe(df, [1], lambda x: x.assign(b=x["a"] * 2))
+    assert "b" in result.columns
+    result = maybe_pipe(df, [], lambda x: x.assign(b=x["a"] * 2))
+    assert "b" not in result.columns
+
+
 def test_maybe_pipe_module_export_matches_top_level():
     assert maybe_pipe_from_module is maybe_pipe

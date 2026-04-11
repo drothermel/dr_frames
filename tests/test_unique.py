@@ -25,3 +25,8 @@ def test_unique_by_cols(sample_df: pd.DataFrame):
     result = unique_by_cols(sample_df, ["category", "name"])
     assert set(result["category"]) == {"x", "y"}
     assert set(result["name"]) == {"alice", "bob", "charlie"}
+
+
+def test_unique_by_cols_skips_missing_columns(sample_df: pd.DataFrame):
+    result = unique_by_cols(sample_df, ["category", "missing"])
+    assert list(result.keys()) == ["category"]

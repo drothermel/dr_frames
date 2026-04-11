@@ -17,12 +17,26 @@ def test_fill_missing_values():
     assert list(result["b"]) == [-1.0, 2.0, -1.0]
 
 
+def test_fill_missing_values_inplace_and_skips_missing_columns():
+    df = pd.DataFrame({"a": [1, None, 3]})
+    result = fill_missing_values(df, {"a": 0, "missing": 5}, inplace=True)
+    assert result is df
+    assert list(df["a"]) == [1.0, 0.0, 3.0]
+
+
 def test_rename_columns():
     df = pd.DataFrame({"a": [1], "b": [2]})
     result = rename_columns(df, {"a": "x", "c": "y"})
     assert "x" in result.columns
     assert "a" not in result.columns
     assert "b" in result.columns
+
+
+def test_rename_columns_inplace_and_missing_mapping_noop():
+    df = pd.DataFrame({"a": [1], "b": [2]})
+    result = rename_columns(df, {"missing": "x"}, inplace=True)
+    assert result is df
+    assert list(df.columns) == ["a", "b"]
 
 
 def test_masked_getter():
@@ -36,6 +50,13 @@ def test_masked_getter_empty():
     df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"]})
     mask = df["a"] == 999
     result = masked_getter(df, mask, "b")
+    assert result is None
+
+
+def test_masked_getter_missing_column():
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    mask = df["a"] == 2
+    result = masked_getter(df, mask, "missing")
     assert result is None
 
 
