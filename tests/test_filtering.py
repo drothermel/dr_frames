@@ -46,6 +46,12 @@ def test_filter_to_values_none():
     assert len(result) == 1
 
 
+def test_filter_to_values_empty_list_is_noop(sample_df: pd.DataFrame):
+    result = filter_to_values(sample_df, "category", [])
+    assert result.equals(sample_df)
+    assert result is not sample_df
+
+
 def test_filter_to_values_literal_none_string_single_value():
     """Test that literal string 'none' is preserved and not treated as NA."""
     df = pd.DataFrame({"a": ["none", "something", None]})

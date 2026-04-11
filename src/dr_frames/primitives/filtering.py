@@ -34,6 +34,8 @@ def filter_to_values(
     df: pd.DataFrame, column: str, values: Sequence[float | str | None]
 ) -> pd.DataFrame:
     """Filter to rows matching any value in list. Use None in list to include NaN."""
+    if not values:
+        return df.copy()
     if None in values:
         other_values = [v for v in values if v is not None]
         mask = df[column].isna() | df[column].isin(other_values)
