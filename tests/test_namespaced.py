@@ -1,0 +1,26 @@
+from __future__ import annotations
+
+import pandas as pd
+
+from dr_frames import group_namespaced_values
+from dr_frames.namespaced import group_namespaced_values as group_namespaced_values_from_module
+
+
+def test_group_namespaced_values():
+    df = pd.DataFrame({"name": ["apple_1", "banana_2", "cherry_3", None]})
+    prefix_map = {"apple": "fruit_a", "banana": "fruit_b"}
+    result = group_namespaced_values(df, "name", prefix_map, output_col="group")
+    assert result.iloc[0] == "fruit_a"
+    assert result.iloc[1] == "fruit_b"
+    assert result.iloc[2] == "cherry_3"
+    assert pd.isna(result.iloc[3])
+
+
+def test_group_namespaced_values_empty_map():
+    df = pd.DataFrame({"name": ["apple", "banana"]})
+    result = group_namespaced_values(df, "name", None, output_col="group")
+    assert list(result) == ["apple", "banana"]
+
+
+def test_group_namespaced_values_module_export_matches_top_level():
+    assert group_namespaced_values_from_module is group_namespaced_values

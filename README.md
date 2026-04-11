@@ -9,6 +9,7 @@ Common entry points:
 - `aggregate_over_seeds` and `aggregate_by_group` for grouped reductions
 - `unique_non_null`, `unique_by_col`, and `unique_by_cols` for unique-value inspection
 - `get_constant_cols` and `get_groupwise_constant_cols` for constant-value inspection
+- `group_namespaced_values` for collapsing namespaced values into broader groups
 - `move_cols_to_beginning` and `strip_col_prefixes` for column cleanup
 
 ## Installation
@@ -57,6 +58,7 @@ result = (
 | **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group` |
 | **unique** | Unique-value inspection | `unique_non_null`, `unique_by_col`, `unique_by_cols` |
 | **constant** | Constant-value inspection | `get_constant_cols`, `get_groupwise_constant_cols` |
+| **namespaced** | Namespace-aware value grouping | `group_namespaced_values` |
 | **pipeline** | Pipe-friendly orchestration | `maybe_pipe` |
 | **parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
@@ -150,6 +152,13 @@ from dr_frames import (
 from dr_frames import (
     get_constant_cols,           # cols constant across the full dataframe
     get_groupwise_constant_cols, # cols constant within each group
+)
+```
+
+### Namespaced
+```python
+from dr_frames import (
+    group_namespaced_values,     # bucket namespaced/prefixed values
 )
 ```
 

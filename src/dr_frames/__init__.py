@@ -10,7 +10,6 @@ from .cells import (
     ensure_column,
     fill_missing_values,
     force_set_cell,
-    group_col_by_prefix,
     map_column_with_fallback,
     masked_getter,
     masked_setter,
@@ -18,6 +17,7 @@ from .cells import (
     rename_columns,
     require_row_index,
 )
+from .namespaced import group_namespaced_values
 from .columns import (
     drop_all_null_cols,
     get_cols_by_contains,
@@ -92,7 +92,7 @@ __all__ = [
     "get_cols_by_prefix",
     "get_constant_cols",
     "get_groupwise_constant_cols",
-    "group_col_by_prefix",
+    "group_namespaced_values",
     "infer_series_base_tag_type",
     "infer_tags_from_series_sample",
     "is_string_series",

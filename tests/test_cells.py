@@ -9,7 +9,6 @@ from dr_frames.cells import (
     ensure_column,
     fill_missing_values,
     force_set_cell,
-    group_col_by_prefix,
     map_column_with_fallback,
     masked_getter,
     masked_setter,
@@ -151,18 +150,3 @@ def test_masked_setter_inplace():
     assert df.loc[1, "b"] == "NEW"
     assert result is df
 
-
-def test_group_col_by_prefix():
-    df = pd.DataFrame({"name": ["apple_1", "banana_2", "cherry_3", None]})
-    prefix_map = {"apple": "fruit_a", "banana": "fruit_b"}
-    result = group_col_by_prefix(df, "name", prefix_map, output_col="group")
-    assert result.iloc[0] == "fruit_a"
-    assert result.iloc[1] == "fruit_b"
-    assert result.iloc[2] == "cherry_3"
-    assert pd.isna(result.iloc[3])
-
-
-def test_group_col_by_prefix_empty_map():
-    df = pd.DataFrame({"name": ["apple", "banana"]})
-    result = group_col_by_prefix(df, "name", None, output_col="group")
-    assert list(result) == ["apple", "banana"]
