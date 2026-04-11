@@ -22,6 +22,10 @@ from .columns import (
     strip_col_prefixes_batch,
 )
 from .constant import get_constant_cols, get_groupwise_constant_cols
+from .coerce import (
+    coerce_numeric_cols,
+    coerce_string_cols,
+)
 from .filtering import (
     filter_to_best_metric,
     filter_to_range,
@@ -42,11 +46,6 @@ from .schema import (
     DataField,
     DataFormat,
     MetricDataField,
-)
-from .types import (
-    coerce_numeric_cols,
-    coerce_string_cols,
-    is_string_series,
 )
 from .unique import unique_by_col, unique_by_cols, unique_non_null
 
@@ -84,7 +83,6 @@ __all__ = [
     "group_namespaced_values",
     "infer_series_base_tag_type",
     "infer_tags_from_series_sample",
-    "is_string_series",
     "make_filter_fxn",
     "masked_getter",
     "masked_setter",

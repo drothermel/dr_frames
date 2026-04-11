@@ -4,8 +4,6 @@ from collections.abc import Iterable, Mapping, Sequence
 
 import pandas as pd
 
-from dr_frames.types import is_string_series
-
 __all__ = [
     "get_cols_by_prefix",
     "get_cols_by_contains",
@@ -88,7 +86,11 @@ def drop_all_null_cols(df: pd.DataFrame) -> pd.DataFrame:
     object_cols = working.select_dtypes(include=["object", "string"])
     blank_mask = pd.DataFrame(False, index=working.index, columns=working.columns)
     if not object_cols.empty:
-        string_cols = [c for c, col in object_cols.items() if is_string_series(col)]
+        string_cols = [
+            c
+            for c, col in object_cols.items()
+            if not col.dropna().empty and col.dropna().map(lambda value: isinstance(value, str)).all()
+        ]
         if string_cols:
             blank_mask[string_cols] = object_cols[string_cols].apply(
                 lambda col: col.str.strip() == ""

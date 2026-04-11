@@ -54,7 +54,7 @@ result = (
 | **columns** | Column selection & reordering | `move_cols_to_beginning`, `get_cols_by_prefix`, `strip_col_prefixes` |
 | **filtering** | Row filtering | `select_subset`, `filter_to_range`, `make_filter_fxn` |
 | **cells** | Targeted dataframe edits | `fill_missing_values`, `rename_columns`, `masked_setter` |
-| **types** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
+| **coerce** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
 | **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group` |
 | **unique** | Unique-value inspection | `unique_non_null`, `unique_by_col`, `unique_by_cols` |
 | **constant** | Constant-value inspection | `get_constant_cols`, `get_groupwise_constant_cols` |
@@ -116,12 +116,11 @@ from dr_frames import (
 )
 ```
 
-### Type Coercion
+### Coercion
 ```python
 from dr_frames import (
-    coerce_numeric_cols,     # convert to float/int
-    coerce_string_cols,      # convert to string dtype
-    is_string_series,        # check if series is strings
+    coerce_numeric_cols,     # convert to numeric with dtype/error controls
+    coerce_string_cols,      # convert to string dtype, optionally filling nulls
 )
 ```
 
