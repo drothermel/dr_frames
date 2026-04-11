@@ -19,11 +19,6 @@ Common entry points:
 pip install dr-frames
 ```
 
-For table formatting features (console, markdown, latex):
-```bash
-pip install dr-frames[formatting]
-```
-
 ## Quick Start
 
 ```python
@@ -65,12 +60,11 @@ result = (
 | **primitives.parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
 | **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `infer_tags_from_series_sample` |
-| **formatting** | Table output | `format_table`, `format_coverage_table` |
 
 ## Documentation
 
 - [Full API Reference](docs/api.md)
-- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [cells](docs/cells.md) | [coerce](docs/coerce.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md) | [formatting](docs/formatting.md)
+- Module guides: [columns](docs/columns.md) | [filtering](docs/filtering.md) | [cells](docs/cells.md) | [coerce](docs/coerce.md) | [aggregation](docs/aggregation.md) | [parsing](docs/parsing.md) | [schema](docs/schema.md) | [profiling](docs/profiling.md)
 - [Recipes & Patterns](docs/recipes.md)
 
 ### Auto-generated API Docs
@@ -189,16 +183,6 @@ from dr_frames import (
     ColInfo,                 # single column metadata
     infer_series_base_tag_type,  # infer dtype tags
     infer_tags_from_series_sample,  # sample-based path/json tags
-)
-```
-
-### Formatting (requires `[formatting]` extra)
-```python
-from dr_frames import (
-    format_table,            # render table in multiple formats
-    format_coverage_table,   # show column coverage stats
-    FORMATTER_TYPES,         # available formatters
-    OUTPUT_FORMATS,          # available output formats
 )
 ```
 

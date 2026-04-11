@@ -49,18 +49,6 @@ from .schema import (
 )
 from .primitives.unique import unique_by_col, unique_by_cols, unique_non_null
 
-try:
-    from .formatting import (  # noqa: F401
-        FORMATTER_TYPES,
-        OUTPUT_FORMATS,
-        format_coverage_table,
-        format_table,
-    )
-
-    _HAS_FORMATTING = True
-except ImportError:
-    _HAS_FORMATTING = False
-
 __all__ = [
     "aggregate_over_seeds",
     "aggregate_by_group",
@@ -100,15 +88,5 @@ __all__ = [
     "unique_by_cols",
     "unique_non_null",
 ]
-
-if _HAS_FORMATTING:
-    __all__.extend(
-        [
-            "format_table",
-            "format_coverage_table",
-            "FORMATTER_TYPES",
-            "OUTPUT_FORMATS",
-        ]
-    )
 
 __version__ = "0.1.0"
