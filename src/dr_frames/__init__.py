@@ -4,7 +4,6 @@ from .aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
     get_constant_cols,
-    maybe_pipe,
     unique_by_col,
     unique_by_cols,
     unique_non_null,
@@ -41,6 +40,7 @@ from .filtering import (
     select_subset,
 )
 from .parsing import parse_list_string
+from .pipeline import maybe_pipe
 from .profiling import (
     ColInfo,
     DFColInfo,

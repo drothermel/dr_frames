@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Iterable, Sequence
 from typing import Any
 
 import pandas as pd
@@ -14,7 +14,6 @@ __all__ = [
     "unique_by_col",
     "unique_by_cols",
     "get_constant_cols",
-    "maybe_pipe",
 ]
 
 
@@ -42,17 +41,6 @@ def get_constant_cols(df: pd.DataFrame, skip: Iterable[str] = ()) -> dict[str, A
         if c not in skip_set
         if df[c].nunique(dropna=False) <= 1
     }
-
-
-def maybe_pipe(
-    df: pd.DataFrame,
-    condition: bool | Callable[[pd.DataFrame], bool] | Iterable | Mapping,
-    func: Callable[..., pd.DataFrame],
-    *args: Any,
-    **kwargs: Any,
-) -> pd.DataFrame:
-    should_apply = condition(df) if callable(condition) else bool(condition)
-    return df.pipe(func, *args, **kwargs) if should_apply else df
 
 
 def _validate_group_columns(df: pd.DataFrame, group_cols: Sequence[str]) -> list[str]:

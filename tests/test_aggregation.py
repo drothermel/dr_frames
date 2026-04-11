@@ -7,7 +7,6 @@ from dr_frames.aggregation import (
     aggregate_over_seeds,
     aggregate_by_group,
     get_constant_cols,
-    maybe_pipe,
     unique_by_col,
     unique_by_cols,
     unique_non_null,
@@ -52,24 +51,6 @@ def test_get_constant_cols_single_row():
     df = pd.DataFrame({"a": [1], "b": [2]})
     result = get_constant_cols(df)
     assert result == {}
-
-
-def test_maybe_pipe_true():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = maybe_pipe(df, True, lambda x: x.assign(b=x["a"] * 2))
-    assert "b" in result.columns
-
-
-def test_maybe_pipe_false():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = maybe_pipe(df, False, lambda x: x.assign(b=x["a"] * 2))
-    assert "b" not in result.columns
-
-
-def test_maybe_pipe_callable():
-    df = pd.DataFrame({"a": [1, 2, 3]})
-    result = maybe_pipe(df, lambda x: len(x) > 2, lambda x: x.assign(b=x["a"] * 2))
-    assert "b" in result.columns
 
 
 def test_aggregate_by_group():

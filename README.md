@@ -2,6 +2,13 @@
 
 Pandas/DataFrame utilities for data manipulation, filtering, aggregation, and schema management.
 
+Common entry points:
+- `maybe_pipe` for conditional `df.pipe(...)` steps
+- `select_subset`, `filter_to_values`, and `filter_to_range` for filtering
+- `coerce_numeric_cols` and `coerce_string_cols` for dtype cleanup
+- `aggregate_over_seeds` and `aggregate_by_group` for grouped reductions
+- `move_cols_to_beginning` and `strip_col_prefixes` for column cleanup
+
 ## Installation
 
 ```bash
@@ -46,6 +53,7 @@ result = (
 | **cells** | Cell-level operations | `ensure_column`, `map_column_with_fallback`, `force_set_cell` |
 | **types** | Type coercion | `coerce_numeric_cols`, `coerce_string_cols` |
 | **aggregation** | GroupBy & reduction | `aggregate_over_seeds`, `aggregate_by_group`, `unique_non_null` |
+| **pipeline** | Pipe-friendly orchestration | `maybe_pipe` |
 | **parsing** | String list parsing | `parse_list_string` |
 | **schema** | Data field metadata | `DataField`, `ComputedField`, `DataFormat` |
 | **profiling** | Column auto-tagging | `DFColInfo`, `ColInfo`, `infer_tags_from_series_sample` |
@@ -124,7 +132,13 @@ from dr_frames import (
     unique_non_null,         # unique values excluding null
     unique_by_col,           # unique values in column
     get_constant_cols,       # cols with single value
-    maybe_pipe,              # conditional pipe
+)
+```
+
+### Pipeline
+```python
+from dr_frames import (
+    maybe_pipe,              # conditional pipe step
 )
 ```
 
